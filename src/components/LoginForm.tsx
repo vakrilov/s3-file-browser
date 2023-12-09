@@ -1,6 +1,7 @@
 import { FunctionComponent, useState } from "react";
 
 import "./LoginForm.scss";
+import { Credentials } from "../api/context";
 
 type InputProps = {
   value: string;
@@ -18,15 +19,9 @@ const Input: FunctionComponent<InputProps> = ({
     value={value}
     placeholder={placeholder}
     onChange={(e) => onChange(e.target.value)}
+    required
   />
 );
-
-export type Credentials = {
-  bucket: string;
-  region: string;
-  accessKeyId: string;
-  secretAccessKey: string;
-};
 
 type LoginFormProps = {
   onSubmit: (val: Credentials) => void;
