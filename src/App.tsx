@@ -4,6 +4,7 @@ import { ApiClientContext, Credentials } from "./api/context";
 
 import "./App.css";
 import { DebugTools } from "./components/DebugTools";
+import { TreeView } from "./components/TreeView";
 
 function App() {
   const { client, initClient } = useContext(ApiClientContext);
@@ -20,6 +21,7 @@ function App() {
       <h1>AWS S3 File Browser</h1>
       {!client && <LoginForm onSubmit={tryInit} />}
       {client && <DebugTools />}
+      {client && <TreeView />}
     </>
   );
 }

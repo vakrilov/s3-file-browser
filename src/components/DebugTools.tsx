@@ -9,13 +9,13 @@ const createStructure = (
   lvl = 0
 ): { name: string; content: string }[] => {
   const files = range(5).map((i) => ({
-    name: `${prefix}/file${i}.txt`,
+    name: `${prefix}file${i}.txt`,
     content: `This is file ${i}`,
   }));
 
   if (lvl < 2) {
     const dirs = range(3).map((i) =>
-      createStructure(`${prefix}/folder${i}`, lvl + 1)
+      createStructure(`${prefix}folder${i}/`, lvl + 1)
     );
     return [...files, ...dirs.flat()];
   } else {

@@ -39,7 +39,7 @@ export class S3FileBrowserClient {
     }
   };
 
-  public createFile = async (path: string, content: string) => {
+  public createFile = async (path: string, content: string) =>
     await this.apiClient.send(
       new PutObjectCommand({
         Bucket: this.bucket,
@@ -47,6 +47,24 @@ export class S3FileBrowserClient {
         Body: content,
       })
     );
+
+  public loadFolder = async (path: string) => {
+    const response = await this.apiClient.send(
+      new ListObjectsV2Command({
+        Bucket: this.bucket,
+        Prefix: path,
+        Delimiter,
+      })
+    );
+
+    const folders =
+      response.CommonPrefixes?.map((r) => r?.Prefix as string).filter(
+        Boolean
+      ) ?? [];
+    const files =
+      response.Contents?.map((r) => r?.Key as string).filter(Boolean) ?? [];
+
+    return { folders, files };
   };
 
   public getAllFiles = async () => {
