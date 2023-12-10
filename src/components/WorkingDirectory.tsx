@@ -1,10 +1,11 @@
-import { VscFile, VscFolder } from "react-icons/vsc";
-import { useWorkingDir, useWorkingDirFiles } from "../store/selectors";
-import "./WorkingDirectory.scss";
 import { useCallback } from "react";
+import { VscFile, VscFolder } from "react-icons/vsc";
+
+import { useWorkingDir, useWorkingDirFiles } from "../store/selectors";
 import { actions, useAppDispatch } from "../store/store";
-import { Delimiter } from "../api/s3-client";
 import { parentDir } from "../utils/fs";
+
+import "./WorkingDirectory.scss";
 
 export const WorkingDirectory = () => {
   const workingDir = useWorkingDir();

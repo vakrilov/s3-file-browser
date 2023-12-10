@@ -2,5 +2,12 @@
   li {
     list-style-type: none;
     text-align: start;
+    margin: 0.25rem;
+    font-size: large;
+
+    &:hover {
+      cursor: pointer;
+      background-color: #3b3b3b;
+    }
   }
 }
