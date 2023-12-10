@@ -1,9 +1,10 @@
 import type { TypedUseSelectorHook } from "react-redux";
 import { useSelector } from "react-redux";
 import { createSelector } from "@reduxjs/toolkit";
+import { uniq } from "lodash-es";
+
 import type { RootState } from "./store";
 import { Delimiter } from "../api/s3-client";
-import { uniq } from "lodash-es";
 
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
@@ -20,7 +21,7 @@ const selectWorkingDirFiles = createSelector(
       .map((f) => f.slice(wd.length))
       .map((f) => {
         const idx = f.indexOf(Delimiter);
-        return idx > 0 ? f.slice(0, idx+1) : f;
+        return idx > 0 ? f.slice(0, idx + 1) : f;
       })
       .filter((f) => f !== "" && f !== Delimiter);
     return uniq(nested);
