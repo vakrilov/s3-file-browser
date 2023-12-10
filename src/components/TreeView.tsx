@@ -1,24 +1,28 @@
 import { FunctionComponent, useCallback, useMemo } from "react";
-
-import { VscFolder, VscFolderOpened } from "react-icons/vsc";
+import cx from "clsx";
+import { VscChevronRight } from "react-icons/vsc";
 
 import "./TreeView.scss";
-import { useAppSelector } from "../store/selectors";
-import { isDir, isRoot, parentDir } from "../utils/fs";
+import {
+  useAppSelector,
+  useExpandedDirs,
+  useWorkingDir,
+} from "../store/selectors";
+import { isDir, isRoot, parentDir, parentDirs } from "../utils/fs";
 import { actions, useAppDispatch } from "../store/store";
 import { Delimiter } from "../api/s3-client";
+import { range } from "lodash-es";
 
-export const dirInfo = (dir: string) => {
+const getDirInfo = (dir: string) => {
   if (isRoot(dir)) {
     return { name: "~", level: 0 };
   }
 
   const parts = dir.split(Delimiter);
-  if (isDir(dir)) parts.pop();
 
   return {
-    name: parts[parts.length - 1],
-    level: parts.length - 1,
+    name: parts[parts.length - 2],
+    level: parts.length - 2,
   };
 };
 
@@ -29,20 +33,27 @@ type DirItemProps = {
 const DirItem: FunctionComponent<DirItemProps> = ({ dir }: DirItemProps) => {
   const dispatch = useAppDispatch();
 
-  const expanded = useAppSelector((state) => state.expandedDirs.includes(dir));
-  const workingDir = useAppSelector((state) => state.workingDir.includes(dir));
+  const expanded = useExpandedDirs();
+  const workingDir = useWorkingDir();
+
+  const { name, level } = useMemo(() => getDirInfo(dir), [dir]);
+  const isMarked = useMemo(() => workingDir.includes(dir), [dir, workingDir]);
+  const isExpanded = useMemo(() => expanded.includes(dir), [dir, expanded]);
 
   const toggleExpand = useCallback(() => {
-    const action = expanded ? actions.collapseDir(dir) : actions.expandDir(dir);
+    const action = isExpanded
+      ? actions.collapseDir(dir)
+      : actions.expandDir(dir);
     dispatch(action);
-  }, [dir, expanded, dispatch]);
-
-  const { name, level } = dirInfo(dir);
+  }, [dir, isExpanded, dispatch]);
 
   return (
-    <li onClick={toggleExpand} className={workingDir ? "working-dir" : ""}>
-      <span>{" |>".repeat(level)} </span>
-      {expanded ? <VscFolderOpened /> : <VscFolder />} {name}
+    <li onClick={toggleExpand}>
+      {range(level).map((i) => (
+        <span key={i} className="indent"></span>
+      ))}
+      <VscChevronRight className={cx("icon", isExpanded && "expanded")} />
+      <span className={cx(isMarked && "marked")}>{name}</span>
     </li>
   );
 };
@@ -53,11 +64,11 @@ export const TreeView = () => {
 
   const dirs = useMemo(
     () =>
-      files.filter((file) => {
-        if (!isDir(file)) return false;
-        const parent = parentDir(file);
-        return isRoot(parent) || expandedDirs.includes(parent);
-      }),
+      files.filter(
+        (file) =>
+          isDir(file) &&
+          parentDirs(file).every((parent) => expandedDirs.includes(parent))
+      ),
     [files, expandedDirs]
   );
 

@@ -1,10 +1,40 @@
 .tree-view {
   li {
+    display: flex;
+    align-items: center;
     list-style-type: none;
     text-align: start;
-  }
+    font-size: large;
 
-  .working-dir {
-    background-color: rgb(0, 62, 109);
+    .icon {
+      margin-right: 0.25rem;
+      transition: transform 0.2s;
+
+      &.expanded {
+        transform: rotate(90deg);
+      }
+    }
+
+    .marked {
+      background-color: rgb(0, 62, 109);
+    }
+
+    .indent {
+      margin: 0 0.5rem;
+      align-self: stretch;
+      border-left-width: 1px;
+      border-left-style: solid;
+      opacity: 0.5;
+
+      &:nth-of-type(3n + 0) {
+        border-left-color: cyan;
+      }
+      &:nth-of-type(3n + 1) {
+        border-left-color: greenyellow;
+      }
+      &:nth-of-type(3n + 2) {
+        border-left-color: orange;
+      }
+    }
   }
 }

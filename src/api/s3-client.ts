@@ -11,7 +11,7 @@ export const Delimiter = "/";
 export const EmptyFolderFile = ".";
 const MaxKeys = 1000;
 
-const delay = () => new Promise((resolve) => setTimeout(resolve, 1000));
+const delay = () => new Promise((resolve) => setTimeout(resolve, 200));
 
 export class S3FileBrowserClient {
   private apiClient: S3Client;

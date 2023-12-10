@@ -14,6 +14,18 @@ export const parentDir = (path: string) => {
   return path.slice(0, idx + 1);
 };
 
+export const parentDirs = (path: string) => {
+  if (isRoot(path)) return [];
+
+  const parents = [];
+  let current = parentDir(path);
+  while (!isRoot(current)) {
+    parents.push(current);
+    current = parentDir(current);
+  }
+  return parents;
+};
+
 export const fileName = (dir: string) => {
   if (isRoot(dir)) return dir;
 
