@@ -5,6 +5,7 @@ import { ApiClientContext, Credentials } from "./api/context";
 import "./App.css";
 import { DebugTools } from "./components/DebugTools";
 import { TreeView } from "./components/TreeView";
+import { WorkingDirectory } from "./components/WorkingDirectory";
 
 function App() {
   const { client, initClient } = useContext(ApiClientContext);
@@ -22,6 +23,8 @@ function App() {
       {!client && <LoginForm onSubmit={tryInit} />}
       {client && <DebugTools />}
       {client && <TreeView />}
+      {client && <WorkingDirectory />}
+
     </>
   );
 }
