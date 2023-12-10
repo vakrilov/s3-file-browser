@@ -12,6 +12,7 @@ import { isDir, isRoot, parentDir, parentDirs } from "../utils/fs";
 import { actions, useAppDispatch } from "../store/store";
 import { Delimiter } from "../api/s3-client";
 import { range } from "lodash-es";
+import { useClickHandler } from "../hooks/use-click-handler";
 
 const getDirInfo = (dir: string) => {
   if (isRoot(dir)) {
@@ -47,8 +48,18 @@ const DirItem: FunctionComponent<DirItemProps> = ({ dir }: DirItemProps) => {
     dispatch(action);
   }, [dir, isExpanded, dispatch]);
 
+  const setWorkingDir = useCallback(
+    () => dispatch(actions.setWorkingDir(dir)),
+    [dir, dispatch]
+  );
+
+  const clickHandler = useClickHandler({
+    onSingleClick: toggleExpand,
+    onDoubleClick: setWorkingDir,
+  });
+
   return (
-    <li onClick={toggleExpand}>
+    <li onClick={clickHandler}>
       {range(level).map((i) => (
         <span key={i} className="indent"></span>
       ))}
