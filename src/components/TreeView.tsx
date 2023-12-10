@@ -1,6 +1,11 @@
 import { FunctionComponent, useCallback, useMemo } from "react";
 import cx from "clsx";
-import { VscChevronRight, VscLoading } from "react-icons/vsc";
+import {
+  VscChevronRight,
+  VscArrowRight,
+  VscLoading,
+  VscReply,
+} from "react-icons/vsc";
 
 import "./TreeView.scss";
 import {
@@ -45,16 +50,18 @@ const DirItem: FunctionComponent<DirItemProps> = ({ dir }: DirItemProps) => {
   const isLoading = useMemo(() => loading.includes(dir), [dir, loading]);
 
   const toggleExpand = useCallback(() => {
+    if (isMarked) return;
+
     const action = isExpanded
       ? actions.collapseDir(dir)
       : actions.expandDir(dir);
     dispatch(action);
-  }, [dir, isExpanded, dispatch]);
+  }, [dir, isMarked, isExpanded, dispatch]);
 
-  const setWorkingDir = useCallback(
-    () => dispatch(actions.setWorkingDir(dir)),
-    [dir, dispatch]
-  );
+  const setWorkingDir = useCallback(() => {
+    dispatch(actions.setWorkingDir(dir));
+    dispatch(actions.expandDir(dir));
+  }, [dir, dispatch]);
 
   const clickHandler = useClickHandler({
     onSingleClick: toggleExpand,
@@ -66,29 +73,38 @@ const DirItem: FunctionComponent<DirItemProps> = ({ dir }: DirItemProps) => {
       {range(level).map((i) => (
         <span key={i} className="indent"></span>
       ))}
-      <VscChevronRight className={cx("icon", isExpanded && "expanded")} />
-      <span className={cx(isMarked && "marked")}>{name}</span>
-      {isLoading && (
-        <div className="loading">
-          <VscLoading />
-        </div>
-      )}
+      <div className={cx("item-content", isMarked && "marked")}>
+        {isMarked ? (
+          <VscReply className={cx("icon", "marked")} />
+        ) : (
+          <VscChevronRight className={cx("icon", isExpanded && "expanded")} />
+        )}
+
+        <span>{name}</span>
+        {isLoading && (
+          <div className="loading">
+            <VscLoading />
+          </div>
+        )}
+      </div>
     </li>
   );
 };
 
 export const TreeView = () => {
   const files = useAppSelector((state) => state.files);
-  const expandedDirs = useAppSelector((state) => state.expandedDirs);
+  const expandedDirs = useExpandedDirs();
+  const workingDir = useWorkingDir();
 
   const dirs = useMemo(
     () =>
       files.filter(
         (file) =>
           isDir(file) &&
-          parentDirs(file).every((parent) => expandedDirs.includes(parent))
+          (workingDir.includes(parentDir(file)) ||
+            parentDirs(file).every((parent) => expandedDirs.includes(parent)))
       ),
-    [files, expandedDirs]
+    [files, expandedDirs, workingDir]
   );
 
   return (
