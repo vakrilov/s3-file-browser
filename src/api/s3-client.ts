@@ -8,6 +8,7 @@ import {
 } from "@aws-sdk/client-s3";
 
 const Delimiter = "/";
+const EmptyFolderFile = ".";
 const MaxKeys = 1000;
 
 export class S3FileBrowserClient {
@@ -48,6 +49,19 @@ export class S3FileBrowserClient {
       })
     );
 
+  public createFolder = async (path: string) =>
+    await this.apiClient.send(
+      new PutObjectCommand({
+        Bucket: this.bucket,
+        Key: `${path}${Delimiter}${EmptyFolderFile}`,
+        Body: "",
+      })
+    );
+
+  public readFile = async (path: string) => {
+    // Todo
+  };
+
   public loadFolder = async (path: string) => {
     const response = await this.apiClient.send(
       new ListObjectsV2Command({
@@ -65,6 +79,15 @@ export class S3FileBrowserClient {
       response.Contents?.map((r) => r?.Key as string).filter(Boolean) ?? [];
 
     return { folders, files };
+  };
+
+  public deleteFile = async (path: string) => {
+    await this.apiClient.send(
+      new DeleteObjectCommand({
+        Bucket: this.bucket,
+        Key: path,
+      })
+    );
   };
 
   public getAllFiles = async () => {
@@ -95,15 +118,6 @@ export class S3FileBrowserClient {
     }
 
     return results.map((r) => r?.Key).filter(Boolean) as string[];
-  };
-
-  public deleteFile = async (path: string) => {
-    await this.apiClient.send(
-      new DeleteObjectCommand({
-        Bucket: this.bucket,
-        Key: path,
-      })
-    );
   };
 
   public deleteAllFiles = async () => {

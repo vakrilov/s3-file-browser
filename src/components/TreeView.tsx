@@ -2,6 +2,8 @@ import { useContext, useEffect, useState } from "react";
 import { uniq } from "lodash-es";
 import { ApiClientContext } from "../api/context";
 
+import { VscFolder, VscFile } from "react-icons/vsc";
+
 import "./TreeView.scss";
 
 export const TreeView = () => {
@@ -14,12 +16,12 @@ export const TreeView = () => {
 
     const loadCurrentFolder = async () => {
       const res = await client.loadFolder(currentPath);
-      const newFiles = uniq([...files, ...res.files, ...res.folders]);
+      const newFiles = uniq([...res.files, ...res.folders]);
       const sortedFiles = newFiles.sort((a, b) => a.localeCompare(b));
       setFiles(sortedFiles);
     };
     loadCurrentFolder();
-  }, [files, client, currentPath]);
+  }, [client, currentPath]);
 
   return (
     <div className="tree-view">
@@ -28,6 +30,8 @@ export const TreeView = () => {
       <ul>
         {files.map((file) => (
           <li key={file} onClick={() => setCurrentPath(file)}>
+            {file.endsWith("/") ? <VscFolder /> : <VscFile />}
+
             {file}
           </li>
         ))}

@@ -15,7 +15,7 @@ const createStructure = (
 
   if (lvl < 2) {
     const dirs = range(3).map((i) =>
-      createStructure(`${prefix}folder${i}/`, lvl + 1)
+      createStructure(`${prefix}dir${i}/`, lvl + 1)
     );
     return [...files, ...dirs.flat()];
   } else {
