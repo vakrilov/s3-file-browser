@@ -1,16 +1,17 @@
-import { configureStore } from "@reduxjs/toolkit";
 import { Provider, useDispatch } from "react-redux";
-import { createSlice } from "@reduxjs/toolkit";
-import type {
+import {
   Action,
   Middleware,
   MiddlewareAPI,
   PayloadAction,
+  createSlice,
+  configureStore,
 } from "@reduxjs/toolkit";
+import { uniq } from "lodash-es";
+
 import { S3FileBrowserClient } from "../api/s3-client";
 import { Dispatch, useContext, useMemo } from "react";
 import { ApiClientContext } from "../api/context";
-import { uniq } from "lodash-es";
 import { fileCompare } from "../utils/fs";
 
 const workingDirSlice = createSlice({
@@ -66,31 +67,38 @@ const loadingDirs = createSlice({
   },
 });
 
-// TODO: Figure out Middleware types
-const createLoadWorkingDirectoryMiddleware =
+const loadFolder = async (
+  dir: string,
+  dispatch: AppDispatch,
+  client: S3FileBrowserClient
+) => {
+  const { startLoading, endLoading } = loadingDirs.actions;
+
+  dispatch(startLoading(dir));
+  try {
+    const newFiles = await client.loadFolder(dir);
+    dispatch(objectsSlice.actions.addFiles(newFiles));
+  } finally {
+    dispatch(endLoading(dir));
+  }
+};
+
+const createAutoLoadDirMiddleware =
   (client: S3FileBrowserClient) =>
   (store: MiddlewareAPI<AppDispatch, RootState>) =>
   (next: Dispatch<Action>) =>
-  async (action: Action) => {
+  (action: Action) => {
     if (
       workingDirSlice.actions.setWorkingDir.match(action) ||
       expandedDirs.actions.expandDir.match(action)
     ) {
       const dir = action.payload;
-      if (store.getState().loadingDirs.includes(dir)) {
-        console.log("Dir already loading:", dir);
-        return;
+      const alreadyLoading = store.getState().loadingDirs.includes(dir);
+      if (!alreadyLoading) {
+        loadFolder(dir, store.dispatch, client);
+      } else {
+        console.log("Already loading", dir);
       }
-      
-      const { startLoading, endLoading } = loadingDirs.actions;
-
-      store.dispatch(startLoading(dir));
-      client
-        .loadFolder(action.payload)
-        .then((newFiles) =>
-          store.dispatch(objectsSlice.actions.addFiles(newFiles))
-        )
-        .finally(() => store.dispatch(endLoading(dir)));
     }
 
     return next(action);
@@ -99,8 +107,7 @@ const createLoadWorkingDirectoryMiddleware =
 const createAppStore = (client: S3FileBrowserClient | null) => {
   const middlewares: Middleware[] = [];
   if (client) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    middlewares.push(createLoadWorkingDirectoryMiddleware(client) as any);
+    middlewares.push(createAutoLoadDirMiddleware(client) as Middleware);
   }
 
   const store = configureStore({
