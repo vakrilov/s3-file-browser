@@ -73,14 +73,13 @@ export class S3FileBrowserClient {
       })
     );
 
-    const folders =
-      response.CommonPrefixes?.map((r) => r?.Prefix as string).filter(
-        Boolean
-      ) ?? [];
-    const files =
-      response.Contents?.map((r) => r?.Key as string).filter(Boolean) ?? [];
+    const folders = [
+      ...(response.CommonPrefixes?.map((r) => r?.Prefix as string) || []),
+    ];
 
-    return { folders, files };
+    const files = [...(response.Contents?.map((r) => r?.Key as string) || [])];
+
+    return [...folders, ...files];
   };
 
   public deleteFile = async (path: string) => {

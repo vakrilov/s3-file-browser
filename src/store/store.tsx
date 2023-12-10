@@ -12,6 +12,7 @@ import { S3FileBrowserClient } from "../api/s3-client";
 import { Dispatch, useContext, useMemo } from "react";
 import { ApiClientContext } from "../api/context";
 import { uniq } from "lodash-es";
+import { fileCompare } from "../utils/fs";
 
 const workingDirSlice = createSlice({
   name: "workingDir",
@@ -26,7 +27,7 @@ const objectsSlice = createSlice({
   initialState: [] as string[],
   reducers: {
     addFiles: (store, action: PayloadAction<string[]>) =>
-      uniq([...store, ...action.payload]).sort(),
+      uniq([...store, ...action.payload]).sort(fileCompare),
   },
 });
 
@@ -37,13 +38,10 @@ const createLoadWorkingDirectoryMiddleware =
   (next: Dispatch<Action>) =>
   async (action: Action) => {
     if (workingDirSlice.actions.setWorkingDir.match(action)) {
-      const res = await client.loadFolder(action.payload);
-      store.dispatch(
-        objectsSlice.actions.addFiles([...res.files, ...res.folders])
-      );
+      const newFiles = await client.loadFolder(action.payload);
+      store.dispatch(objectsSlice.actions.addFiles(newFiles));
     }
 
-    // Pass the action to the next middleware or reducer
     return next(action);
   };
 

@@ -11,3 +11,9 @@ export const parentDir = (path: string) => {
 
   return path.slice(0, idx + 1);
 };
+
+export const fileCompare = (a: string, b: string) => {
+  if (isDir(a) && !isDir(b)) return -1;
+  if (!isDir(a) && isDir(b)) return 1;
+  return a.localeCompare(b);
+};
