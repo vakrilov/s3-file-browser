@@ -48,22 +48,49 @@ const expandedDirs = createSlice({
   },
 });
 
+const loadingDirs = createSlice({
+  name: "loadingDirs",
+  initialState: [] as string[],
+  reducers: {
+    startLoading: (draft, action: PayloadAction<string>) => {
+      if (!draft.includes(action.payload)) {
+        draft.push(action.payload);
+      }
+    },
+    endLoading: (draft, action: PayloadAction<string>) => {
+      const index = draft.indexOf(action.payload);
+      if (index !== -1) {
+        draft.splice(index, 1);
+      }
+    },
+  },
+});
+
 // TODO: Figure out Middleware types
 const createLoadWorkingDirectoryMiddleware =
   (client: S3FileBrowserClient) =>
-  (store: MiddlewareAPI<AppDispatch, StoreType>) =>
+  (store: MiddlewareAPI<AppDispatch, RootState>) =>
   (next: Dispatch<Action>) =>
   async (action: Action) => {
     if (
       workingDirSlice.actions.setWorkingDir.match(action) ||
       expandedDirs.actions.expandDir.match(action)
     ) {
-      // TODO: Add loading state
+      const dir = action.payload;
+      if (store.getState().loadingDirs.includes(dir)) {
+        console.log("Dir already loading:", dir);
+        return;
+      }
+      
+      const { startLoading, endLoading } = loadingDirs.actions;
+
+      store.dispatch(startLoading(dir));
       client
         .loadFolder(action.payload)
         .then((newFiles) =>
           store.dispatch(objectsSlice.actions.addFiles(newFiles))
-        );
+        )
+        .finally(() => store.dispatch(endLoading(dir)));
     }
 
     return next(action);
@@ -81,6 +108,7 @@ const createAppStore = (client: S3FileBrowserClient | null) => {
       workingDir: workingDirSlice.reducer,
       files: objectsSlice.reducer,
       expandedDirs: expandedDirs.reducer,
+      loadingDirs: loadingDirs.reducer,
     },
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({
@@ -112,4 +140,5 @@ export const actions = {
   ...workingDirSlice.actions,
   ...objectsSlice.actions,
   ...expandedDirs.actions,
+  ...loadingDirs.actions,
 };

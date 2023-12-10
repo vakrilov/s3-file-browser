@@ -11,6 +11,7 @@ export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 const selectFiles = (state: RootState) => state.files;
 const selectWorkingDir = (state: RootState) => state.workingDir;
 const selectExpandedDirs = (state: RootState) => state.expandedDirs;
+const selectLoadingDirs = (state: RootState) => state.loadingDirs;
 
 export const useWorkingDir = () => useAppSelector(selectWorkingDir);
 
@@ -32,3 +33,5 @@ const selectWorkingDirFiles = createSelector(
 export const useWorkingDirFiles = () => useAppSelector(selectWorkingDirFiles);
 
 export const useExpandedDirs = () => useAppSelector(selectExpandedDirs);
+
+export const useLoadingDirs = () => useAppSelector(selectLoadingDirs);

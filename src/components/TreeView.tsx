@@ -1,11 +1,12 @@
 import { FunctionComponent, useCallback, useMemo } from "react";
 import cx from "clsx";
-import { VscChevronRight } from "react-icons/vsc";
+import { VscChevronRight, VscLoading } from "react-icons/vsc";
 
 import "./TreeView.scss";
 import {
   useAppSelector,
   useExpandedDirs,
+  useLoadingDirs,
   useWorkingDir,
 } from "../store/selectors";
 import { isDir, isRoot, parentDir, parentDirs } from "../utils/fs";
@@ -36,10 +37,12 @@ const DirItem: FunctionComponent<DirItemProps> = ({ dir }: DirItemProps) => {
 
   const expanded = useExpandedDirs();
   const workingDir = useWorkingDir();
+  const loading = useLoadingDirs(); //TODO: how to prevent this form causing rerender?
 
   const { name, level } = useMemo(() => getDirInfo(dir), [dir]);
   const isMarked = useMemo(() => workingDir.includes(dir), [dir, workingDir]);
   const isExpanded = useMemo(() => expanded.includes(dir), [dir, expanded]);
+  const isLoading = useMemo(() => loading.includes(dir), [dir, loading]);
 
   const toggleExpand = useCallback(() => {
     const action = isExpanded
@@ -65,6 +68,11 @@ const DirItem: FunctionComponent<DirItemProps> = ({ dir }: DirItemProps) => {
       ))}
       <VscChevronRight className={cx("icon", isExpanded && "expanded")} />
       <span className={cx(isMarked && "marked")}>{name}</span>
+      {isLoading && (
+        <div className="loading">
+          <VscLoading />
+        </div>
+      )}
     </li>
   );
 };
