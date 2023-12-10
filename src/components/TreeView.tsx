@@ -1,13 +1,7 @@
 import { FunctionComponent, useCallback, useMemo } from "react";
 import cx from "clsx";
-import {
-  VscChevronRight,
-  VscArrowRight,
-  VscLoading,
-  VscReply,
-} from "react-icons/vsc";
+import { range } from "lodash-es";
 
-import "./TreeView.scss";
 import {
   useAppSelector,
   useExpandedDirs,
@@ -17,8 +11,10 @@ import {
 import { isDir, isRoot, parentDir, parentDirs } from "../utils/fs";
 import { actions, useAppDispatch } from "../store/store";
 import { Delimiter } from "../api/s3-client";
-import { range } from "lodash-es";
 import { useClickHandler } from "../hooks/use-click-handler";
+
+import { VscChevronRight, VscLoading, VscReply } from "react-icons/vsc";
+import "./TreeView.scss";
 
 const getDirInfo = (dir: string) => {
   if (isRoot(dir)) {
@@ -81,12 +77,9 @@ const DirItem: FunctionComponent<DirItemProps> = ({ dir }: DirItemProps) => {
         )}
 
         <span>{name}</span>
-        {isLoading && (
-          <div className="loading">
-            <VscLoading />
-          </div>
-        )}
       </div>
+
+      {isLoading && <VscLoading className="loading" />}
     </li>
   );
 };

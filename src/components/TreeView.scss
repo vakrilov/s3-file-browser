@@ -5,37 +5,42 @@
     list-style-type: none;
     text-align: start;
     font-size: large;
+    user-select: none;
+
+    .icon {
+      margin: 0 0.25rem;
+    }
 
     .item-content {
       display: flex;
       align-items: center;
-      padding-right: 0.5rem;
+      padding-right: 0.25rem;
 
       &.marked {
-        background: linear-gradient(90deg, rgba(17,60,119,1) 0%, rgba(0,212,255,0) 100%);
+        background: linear-gradient(
+          90deg,
+          rgba(17, 60, 119, 1) 0%,
+          rgba(0, 212, 255, 0) 100%
+        );
         border-radius: 0.5rem 0 0 0.5rem;
 
         .icon {
-          margin-left: 0.25rem;
           transform: rotate(180deg);
         }
       }
 
       .icon {
-        margin-right: 0.25rem;
         transition: transform 0.2s;
 
         &.expanded {
           transform: rotate(90deg);
         }
       }
-      .loading {
-        margin-left: 0.5rem;
-        svg {
-          vertical-align: baseline;
-          animation: spin 1s linear infinite;
-        }
-      }
+    }
+
+    .loading {
+      vertical-align: baseline;
+      animation: spin 1s linear infinite;
     }
 
     .indent {
