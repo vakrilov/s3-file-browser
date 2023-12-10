@@ -4,18 +4,20 @@ import { ApiClientContext } from "../api/context";
 
 import "./DebugTools.scss";
 
+const randNum = () => Math.floor(Math.random() * 1000);
+
 const createStructure = (
   prefix: string,
   lvl = 0
 ): { name: string; content: string }[] => {
-  const files = range(5).map((i) => ({
-    name: `${prefix}file${i}.txt`,
-    content: `This is file ${i}`,
+  const files = range(5).map(() => ({
+    name: `${prefix}file-${randNum()}.txt`,
+    content: `This is sample file!`,
   }));
 
   if (lvl < 2) {
-    const dirs = range(3).map((i) =>
-      createStructure(`${prefix}dir${i}/`, lvl + 1)
+    const dirs = range(3).map(() =>
+      createStructure(`${prefix}dir-lvl${lvl}-${randNum()}/`, lvl + 1)
     );
     return [...files, ...dirs.flat()];
   } else {

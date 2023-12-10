@@ -4,7 +4,6 @@ import { ApiClientContext, Credentials } from "./api/context";
 
 import "./App.css";
 import { DebugTools } from "./components/DebugTools";
-import { TreeView } from "./components/TreeView";
 import { WorkingDirectory } from "./components/WorkingDirectory";
 
 function App() {
@@ -22,7 +21,7 @@ function App() {
       <h1>AWS S3 File Browser</h1>
       {!client && <LoginForm onSubmit={tryInit} />}
       {client && <DebugTools />}
-      {client && <TreeView />}
+      {/* {client && <TreeView />} */}
       {client && <WorkingDirectory />}
 
     </>

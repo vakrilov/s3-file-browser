@@ -7,8 +7,8 @@ import {
   S3Client,
 } from "@aws-sdk/client-s3";
 
-const Delimiter = "/";
-const EmptyFolderFile = ".";
+export const Delimiter = "/";
+export const EmptyFolderFile = ".";
 const MaxKeys = 1000;
 
 export class S3FileBrowserClient {
@@ -60,9 +60,11 @@ export class S3FileBrowserClient {
 
   public readFile = async (path: string) => {
     // Todo
+    console.log(`Reading file: ~/${path}`);
   };
 
   public loadFolder = async (path: string) => {
+    console.log(`Loading folder: ~/${path}`);
     const response = await this.apiClient.send(
       new ListObjectsV2Command({
         Bucket: this.bucket,
