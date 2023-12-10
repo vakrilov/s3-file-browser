@@ -10,13 +10,13 @@ const createStructure = (
   prefix: string,
   lvl = 0
 ): { name: string; content: string }[] => {
-  const files = range(5).map(() => ({
+  const files = range(3).map(() => ({
     name: `${prefix}file-${randNum()}.txt`,
     content: `This is sample file!`,
   }));
 
-  if (lvl < 2) {
-    const dirs = range(3).map(() =>
+  if (lvl < 4) {
+    const dirs = range(2).map(() =>
       createStructure(`${prefix}dir-lvl${lvl}-${randNum()}/`, lvl + 1)
     );
     return [...files, ...dirs.flat()];

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { configureStore } from "@reduxjs/toolkit";
 import { Provider, useDispatch } from "react-redux";
 import { createSlice } from "@reduxjs/toolkit";
@@ -31,15 +30,40 @@ const objectsSlice = createSlice({
   },
 });
 
+const expandedDirs = createSlice({
+  name: "expandedDirs",
+  initialState: [] as string[],
+  reducers: {
+    expandDir: (draft, action: PayloadAction<string>) => {
+      if (!draft.includes(action.payload)) {
+        draft.push(action.payload);
+      }
+    },
+    collapseDir: (draft, action: PayloadAction<string>) => {
+      const index = draft.indexOf(action.payload);
+      if (index !== -1) {
+        draft.splice(index, 1);
+      }
+    },
+  },
+});
+
 // TODO: Figure out Middleware types
 const createLoadWorkingDirectoryMiddleware =
   (client: S3FileBrowserClient) =>
   (store: MiddlewareAPI<AppDispatch, StoreType>) =>
   (next: Dispatch<Action>) =>
   async (action: Action) => {
-    if (workingDirSlice.actions.setWorkingDir.match(action)) {
-      const newFiles = await client.loadFolder(action.payload);
-      store.dispatch(objectsSlice.actions.addFiles(newFiles));
+    if (
+      workingDirSlice.actions.setWorkingDir.match(action) ||
+      expandedDirs.actions.expandDir.match(action)
+    ) {
+      // TODO: Add loading state
+      client
+        .loadFolder(action.payload)
+        .then((newFiles) =>
+          store.dispatch(objectsSlice.actions.addFiles(newFiles))
+        );
     }
 
     return next(action);
@@ -48,6 +72,7 @@ const createLoadWorkingDirectoryMiddleware =
 const createAppStore = (client: S3FileBrowserClient | null) => {
   const middlewares: Middleware[] = [];
   if (client) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     middlewares.push(createLoadWorkingDirectoryMiddleware(client) as any);
   }
 
@@ -55,9 +80,11 @@ const createAppStore = (client: S3FileBrowserClient | null) => {
     reducer: {
       workingDir: workingDirSlice.reducer,
       files: objectsSlice.reducer,
+      expandedDirs: expandedDirs.reducer,
     },
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({
+        serializableCheck: false,
         thunk: {
           extraArgument: client,
         },
@@ -84,4 +111,5 @@ export const useAppDispatch: () => AppDispatch = useDispatch;
 export const actions = {
   ...workingDirSlice.actions,
   ...objectsSlice.actions,
+  ...expandedDirs.actions,
 };

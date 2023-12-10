@@ -5,6 +5,7 @@ import { WorkingDirectory } from "./components/WorkingDirectory";
 import { TreeView } from "./components/TreeView";
 
 import "./App.scss";
+import { DebugTools } from "./components/DebugTools";
 
 function App() {
   const { client, initClient } = useContext(ApiClientContext);
@@ -32,7 +33,7 @@ function App() {
         </div>
       )}
 
-      {/* {client && <DebugTools />} */}
+      {client && <DebugTools />}
     </div>
   );
 }

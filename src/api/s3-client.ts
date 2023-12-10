@@ -11,6 +11,8 @@ export const Delimiter = "/";
 export const EmptyFolderFile = ".";
 const MaxKeys = 1000;
 
+const delay = () => new Promise((resolve) => setTimeout(resolve, 1000));
+
 export class S3FileBrowserClient {
   private apiClient: S3Client;
   private bucket: string;
@@ -65,6 +67,9 @@ export class S3FileBrowserClient {
 
   public loadFolder = async (path: string) => {
     console.log(`Loading folder: ~/${path}`);
+
+    await delay();
+
     const response = await this.apiClient.send(
       new ListObjectsV2Command({
         Bucket: this.bucket,
