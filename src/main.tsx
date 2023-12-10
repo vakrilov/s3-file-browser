@@ -4,6 +4,7 @@ import App from "./App.tsx";
 import { ApiClientProvider } from "./api/context.tsx";
 import { StoreProvider } from "./store/store.tsx";
 
+import 'normalize.css'
 import "./index.css";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
