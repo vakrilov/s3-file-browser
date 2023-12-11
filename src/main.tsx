@@ -5,7 +5,7 @@ import { ApiClientProvider } from "./api/context.tsx";
 import { StoreProvider } from "./store/store.tsx";
 
 import 'normalize.css'
-import "./index.css";
+import "./index.scss";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
