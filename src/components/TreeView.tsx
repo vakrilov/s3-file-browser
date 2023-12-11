@@ -102,8 +102,6 @@ export const TreeView = () => {
 
   return (
     <div className="tree-view">
-      <h1>TreeView</h1>
-
       <ul>
         {dirs.map((dir) => (
           <TreeViewItem key={dir} dir={dir} />
