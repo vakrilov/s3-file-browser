@@ -33,7 +33,7 @@ type DirItemProps = {
   dir: string;
 };
 
-const DirItem: FunctionComponent<DirItemProps> = ({ dir }: DirItemProps) => {
+const TreeViewItem: FunctionComponent<DirItemProps> = ({ dir }: DirItemProps) => {
   const dispatch = useAppDispatch();
 
   const expanded = useExpandedDirs();
@@ -106,7 +106,7 @@ export const TreeView = () => {
 
       <ul>
         {dirs.map((dir) => (
-          <DirItem key={dir} dir={dir} />
+          <TreeViewItem key={dir} dir={dir} />
         ))}
       </ul>
     </div>
