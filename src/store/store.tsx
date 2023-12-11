@@ -1,4 +1,4 @@
-import { Provider, useDispatch } from "react-redux";
+import { Provider } from "react-redux";
 import { Middleware, configureStore } from "@reduxjs/toolkit";
 
 import { createAutoLoadDirMiddleware } from "./auto-load-middleware";
@@ -41,20 +41,12 @@ const createAppStore = (client: S3FileBrowserClient | null) => {
   return store;
 };
 
-export const StoreProvider = ({ children }: { children: React.ReactNode }) => {
-  const { client } = useContext(ApiClientContext);
-  const store = useMemo(() => createAppStore(client), [client]);
-  return <Provider store={store}>{children}</Provider>;
-};
-
 type StoreType = ReturnType<typeof createAppStore>;
 export type RootState = ReturnType<StoreType["getState"]>;
 export type AppDispatch = StoreType["dispatch"];
 
-export const useAppDispatch: () => AppDispatch = useDispatch;
-export const actions = {
-  ...workingDirSlice.actions,
-  ...filesSlice.actions,
-  ...expandedDirsSlice.actions,
-  ...loadingDirsSlice.actions,
+export const StoreProvider = ({ children }: { children: React.ReactNode }) => {
+  const { client } = useContext(ApiClientContext);
+  const store = useMemo(() => createAppStore(client), [client]);
+  return <Provider store={store}>{children}</Provider>;
 };

@@ -7,9 +7,13 @@ import {
   VscOutput,
 } from "react-icons/vsc";
 
-import { useWorkingDir, useWorkingDirFiles } from "../store/selectors";
-import { actions, useAppDispatch } from "../store/store";
 import { isDir, isRoot, parentDir } from "../utils/fs";
+import { actions } from "../store/actions";
+import {
+  useAppDispatch,
+  useWorkingDir,
+  useWorkingDirFiles,
+} from "../store/hooks";
 
 import "./WorkingDirectory.scss";
 

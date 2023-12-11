@@ -10,5 +10,6 @@ export const filesSlice = createSlice({
   initialState: [] as string[],
   reducers: {
     addFiles: (store, action: PayloadAction<string[]>) => uniq([...store, ...action.payload]).sort(fileCompare),
+    
   },
 });

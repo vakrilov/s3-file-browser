@@ -1,10 +1,12 @@
 import type { TypedUseSelectorHook } from "react-redux";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { createSelector } from "@reduxjs/toolkit";
 import { uniq } from "lodash-es";
 
-import type { RootState } from "./store";
+import type { AppDispatch, RootState } from "./store";
 import { Delimiter } from "../api/s3-client";
+
+export const useAppDispatch: () => AppDispatch = useDispatch;
 
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 

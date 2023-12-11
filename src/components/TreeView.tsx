@@ -3,13 +3,15 @@ import cx from "clsx";
 import { range } from "lodash-es";
 
 import {
+  useAppDispatch,
   useAppSelector,
   useExpandedDirs,
   useLoadingDirs,
   useWorkingDir,
-} from "../store/selectors";
+} from "../store/hooks";
+import { actions } from "../store/actions";
+
 import { isDir, isRoot, parentDir, parentDirs } from "../utils/fs";
-import { actions, useAppDispatch } from "../store/store";
 import { Delimiter } from "../api/s3-client";
 import { useClickHandler } from "../hooks/use-click-handler";
 
