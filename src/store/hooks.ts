@@ -4,7 +4,7 @@ import { createSelector } from "@reduxjs/toolkit";
 import { uniq } from "lodash-es";
 
 import type { AppDispatch, RootState } from "./store";
-import { Delimiter } from "../api/s3-client";
+import { Delimiter, EmptyDirFile } from "../api/s3-client";
 
 export const useAppDispatch: () => AppDispatch = useDispatch;
 
@@ -27,7 +27,7 @@ const selectWorkingDirFiles = createSelector(
         const idx = f.indexOf(Delimiter);
         return idx > 0 ? f.slice(0, idx + 1) : f;
       })
-      .filter((f) => f !== "" && f !== Delimiter);
+      .filter((f) => f !== "" && f !== Delimiter && f !== EmptyDirFile);
     return uniq(nested);
   }
 );

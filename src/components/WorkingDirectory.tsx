@@ -5,10 +5,12 @@ import {
   VscReply,
   VscTrash,
   VscOutput,
+  VscNewFile,
+  VscNewFolder,
 } from "react-icons/vsc";
 
 import { isDir, isRoot, parentDir } from "../utils/fs";
-import { actions } from "../store/actions";
+import { actions, thunks } from "../store/actions";
 import {
   useAppDispatch,
   useWorkingDir,
@@ -16,6 +18,7 @@ import {
 } from "../store/hooks";
 
 import "./WorkingDirectory.scss";
+import { Delimiter } from "../api/s3-client";
 
 export const WorkingDirectory = () => {
   const workingDir = useWorkingDir();
@@ -23,20 +26,43 @@ export const WorkingDirectory = () => {
   const dispatch = useAppDispatch();
 
   const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
-  const selectedFile = selectedIdx !== null && files[selectedIdx];
+  const selectedFile = selectedIdx !== null ? files[selectedIdx] : null;
   const isFileSelected = selectedFile && !isDir(selectedFile);
 
   const handleGoUp = useCallback(() => {
     dispatch(actions.setWorkingDir(parentDir(workingDir)));
   }, [workingDir, dispatch]);
 
-  const handleDeleteFile = useCallback(() => {
-    console.log("delete file", selectedFile);
-  }, [selectedFile, dispatch]);
+  const handleDeleteFile = useCallback(async () => {
+    if (selectedFile) {
+      await dispatch(thunks.deleteFile(`${workingDir}${selectedFile}`));
+      setSelectedIdx(null);
+    }
+  }, [workingDir, selectedFile, dispatch]);
 
-  const handleOpenFile = useCallback(() => {
+  const handleOpenFile = useCallback(async () => {
     console.log("open file", selectedFile);
-  }, [selectedFile, dispatch]);
+    if (selectedFile) {
+      const action = thunks.readFile(`${workingDir}${selectedFile}`);
+      const result = await dispatch(action);
+      console.log("result:", result.payload);
+    }
+  }, [selectedFile, workingDir, dispatch]);
+
+  const handleCreateFile = useCallback(async () => {
+    dispatch(
+      thunks.createFile({
+        path: `${workingDir}test`,
+        body: "test 123",
+      })
+    );
+    setSelectedIdx(null);
+  }, [workingDir, dispatch]);
+
+  const handleCreateDir = useCallback(async () => {
+    dispatch(thunks.createDir(`${workingDir}new_dir${Delimiter}`));
+    setSelectedIdx(null);
+  }, [workingDir, dispatch]);
 
   const handleClick = useCallback(
     (file: string) => {
@@ -66,6 +92,12 @@ export const WorkingDirectory = () => {
         </button>
         <button onClick={handleOpenFile} disabled={!isFileSelected}>
           <VscOutput className="icon" /> Open
+        </button>
+        <button onClick={handleCreateFile}>
+          <VscNewFile className="icon" /> New File
+        </button>
+        <button onClick={handleCreateDir}>
+          <VscNewFolder className="icon" /> New Dir
         </button>
       </div>
 

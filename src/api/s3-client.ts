@@ -9,7 +9,7 @@ import {
 } from "@aws-sdk/client-s3";
 
 export const Delimiter = "/";
-export const EmptyFolderFile = ".";
+export const EmptyDirFile = "__empty_dir__";
 const MaxKeys = 1000;
 
 const delay = () => new Promise((resolve) => setTimeout(resolve, 300));
@@ -52,11 +52,11 @@ export class S3FileBrowserClient {
       })
     );
 
-  public createFolder = async (path: string) =>
+  public createDir = async (path: string) =>
     await this.apiClient.send(
       new PutObjectCommand({
         Bucket: this.bucket,
-        Key: `${path}${Delimiter}${EmptyFolderFile}`,
+        Key: `${path}${EmptyDirFile}`,
         Body: "",
       })
     );
