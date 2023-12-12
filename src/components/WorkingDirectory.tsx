@@ -19,6 +19,7 @@ import {
 
 import "./WorkingDirectory.scss";
 import { Delimiter } from "../api/s3-client";
+import { Modal } from "./Modal";
 
 export const WorkingDirectory = () => {
   const workingDir = useWorkingDir();
@@ -26,6 +27,9 @@ export const WorkingDirectory = () => {
   const dispatch = useAppDispatch();
 
   const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
+  const [isFileModalOpen, setFileModalOpen] = useState(false);
+  const [fileBody, setFileBody] = useState("");
+
   const selectedFile = selectedIdx !== null ? files[selectedIdx] : null;
   const isFileSelected = selectedFile && !isDir(selectedFile);
 
@@ -41,11 +45,11 @@ export const WorkingDirectory = () => {
   }, [workingDir, selectedFile, dispatch]);
 
   const handleOpenFile = useCallback(async () => {
-    console.log("open file", selectedFile);
     if (selectedFile) {
       const action = thunks.readFile(`${workingDir}${selectedFile}`);
       const result = await dispatch(action);
-      console.log("result:", result.payload);
+      setFileModalOpen(true);
+      setFileBody(result.payload as string);
     }
   }, [selectedFile, workingDir, dispatch]);
 
@@ -132,6 +136,10 @@ export const WorkingDirectory = () => {
           }
         })}
       </ul>
+
+      <Modal isOpen={isFileModalOpen} onClose={() => setFileModalOpen(false)}>
+        {fileBody}
+      </Modal>
     </div>
   );
 };

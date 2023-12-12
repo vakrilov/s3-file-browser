@@ -1,0 +1,15 @@
+.modal {
+  position: relative;
+  min-width: 400px;
+  min-height: 200px;
+
+  .close-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 0.5rem;
+    border-width: 0;
+    background-color: transparent;
+    font-size: x-large;
+  }
+}
