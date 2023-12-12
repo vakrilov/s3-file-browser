@@ -1,12 +1,12 @@
 import { useRef, useState, FunctionComponent, useEffect } from "react";
 import "./Modal.scss";
 import { VscClose } from "react-icons/vsc";
-interface ModalProps {
+
+type ModalProps = {
   isOpen: boolean;
-  hasCloseBtn?: boolean;
   onClose?: () => void;
   children: React.ReactNode;
-}
+};
 
 export const Modal: FunctionComponent<ModalProps> = ({
   isOpen,
