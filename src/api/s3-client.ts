@@ -4,6 +4,7 @@ import {
   ListObjectsV2Command,
   ListObjectsV2Output,
   PutObjectCommand,
+  GetObjectCommand,
   S3Client,
 } from "@aws-sdk/client-s3";
 
@@ -61,8 +62,14 @@ export class S3FileBrowserClient {
     );
 
   public readFile = async (path: string) => {
-    // Todo
-    console.log(`Reading file: ~/${path}`);
+    const response = await this.apiClient.send(
+      new GetObjectCommand({
+        Bucket: this.bucket,
+        Key: path,
+      })
+    );
+    const body = await response.Body.transformToString();
+    return body;
   };
 
   public loadFolder = async (path: string) => {
