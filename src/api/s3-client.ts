@@ -68,7 +68,7 @@ export class S3FileBrowserClient {
         Key: path,
       })
     );
-    const body = await response.Body.transformToString();
+    const body = await response.Body?.transformToString();
     return body;
   };
 

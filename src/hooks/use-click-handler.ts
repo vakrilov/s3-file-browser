@@ -11,7 +11,7 @@ export const useClickHandler = <T>({
   onDoubleClick,
   latency = 200,
 }: Params<T>) => {
-  const timerRef = useRef<number>();
+  const timerRef = useRef<ReturnType<typeof setTimeout>>();
 
   const clearTimer = () => {
     if (timerRef.current) {
