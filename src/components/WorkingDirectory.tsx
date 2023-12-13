@@ -20,6 +20,9 @@ import {
 import "./WorkingDirectory.scss";
 import { Delimiter } from "../api/s3-client";
 import { ShowFileModal } from "./modals/ShowFileModal";
+import { CreateDirModal } from "./modals/CreateDirModal";
+
+type OpenedModal = null | "open-file" | "create-file" | "create-dir";
 
 export const WorkingDirectory = () => {
   const workingDir = useWorkingDir();
@@ -27,14 +30,17 @@ export const WorkingDirectory = () => {
   const dispatch = useAppDispatch();
 
   const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
-  const [isFileModalOpen, setFileModalOpen] = useState(false);
+  const [openedModal, setOpenedModal] = useState<OpenedModal>(null);
 
   const selectedFile = selectedIdx !== null ? files[selectedIdx] : null;
   const isFileSelected = selectedFile && !isDir(selectedFile);
 
-  const handleGoUp = useCallback(() => {
-    dispatch(actions.setWorkingDir(parentDir(workingDir)));
-  }, [workingDir, dispatch]);
+  const onCloseModal = useCallback(() => setOpenedModal(null), []);
+
+  const handleGoUp = useCallback(
+    () => dispatch(actions.setWorkingDir(parentDir(workingDir))),
+    [workingDir, dispatch]
+  );
 
   const handleDeleteFile = useCallback(async () => {
     if (selectedFile) {
@@ -43,26 +49,14 @@ export const WorkingDirectory = () => {
     }
   }, [workingDir, selectedFile, dispatch]);
 
-  const handleOpenFile = useCallback(async () => {
-    if (selectedFile) {
-      setFileModalOpen(true);
-    }
-  }, [selectedFile]);
+  const handleOpenFile = useCallback(
+    () => selectedFile && setOpenedModal("open-file"),
+    [selectedFile]
+  );
 
-  const handleCreateFile = useCallback(async () => {
-    dispatch(
-      thunks.createFile({
-        path: `${workingDir}test`,
-        body: "test 123",
-      })
-    );
-    setSelectedIdx(null);
-  }, [workingDir, dispatch]);
+  const handleCreateFile = useCallback(() => setOpenedModal("create-file"), []);
 
-  const handleCreateDir = useCallback(async () => {
-    dispatch(thunks.createDir(`${workingDir}new_dir${Delimiter}`));
-    setSelectedIdx(null);
-  }, [workingDir, dispatch]);
+  const handleCreateDir = useCallback(() => setOpenedModal("create-dir"), []);
 
   const handleClick = useCallback(
     (file: string) => {
@@ -134,9 +128,14 @@ export const WorkingDirectory = () => {
       </ul>
 
       <ShowFileModal
-        isOpen={isFileModalOpen}
-        onClose={() => setFileModalOpen(false)}
+        isOpen={openedModal === "open-file"}
+        onClose={onCloseModal}
         path={`${workingDir}${selectedFile}`}
+      />
+
+      <CreateDirModal
+        isOpen={openedModal === "create-dir"}
+        onClose={onCloseModal}
       />
     </div>
   );

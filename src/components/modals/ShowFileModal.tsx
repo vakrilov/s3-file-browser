@@ -2,10 +2,9 @@ import { FunctionComponent, useCallback, useEffect, useState } from "react";
 import { Modal } from "./Modal";
 import { thunks } from "../../store/actions";
 import { useAppDispatch } from "../../store/hooks";
-import { VscLoading } from "react-icons/vsc";
 import { Loader } from "../Loader";
 
-type ShowFileModalProps = {
+type Props = {
   isOpen: boolean;
   path: string;
   onClose?: () => void;
@@ -21,7 +20,7 @@ const useReadFile = (path: string) => {
   }, [path, dispatch]);
 };
 
-export const ShowFileModal: FunctionComponent<ShowFileModalProps> = ({
+export const ShowFileModal: FunctionComponent<Props> = ({
   isOpen,
   onClose,
   path,
