@@ -18,9 +18,8 @@ import {
 } from "../store/hooks";
 
 import "./WorkingDirectory.scss";
-import { Delimiter } from "../api/s3-client";
 import { ShowFileModal } from "./modals/ShowFileModal";
-import { CreateDirModal } from "./modals/CreateDirModal";
+import { CreateObjectModal } from "./modals/CreateObjectModal";
 
 type OpenedModal = null | "open-file" | "create-file" | "create-dir";
 
@@ -133,8 +132,15 @@ export const WorkingDirectory = () => {
         path={`${workingDir}${selectedFile}`}
       />
 
-      <CreateDirModal
+      <CreateObjectModal
         isOpen={openedModal === "create-dir"}
+        type="dir"
+        onClose={onCloseModal}
+      />
+
+      <CreateObjectModal
+        isOpen={openedModal === "create-file"}
+        type="file"
         onClose={onCloseModal}
       />
     </div>
