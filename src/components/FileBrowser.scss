@@ -2,7 +2,7 @@
   flex: 1 1 0;
   overflow-y: auto;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 2fr 3fr;
   grid-template-areas: "left right";
 
   .left-panel,
@@ -11,8 +11,6 @@
     padding: 2rem;
     margin: 1rem;
     border: 1px solid #d0d0d0;
-    // height: 100%;
-
   }
 
   .left-panel {

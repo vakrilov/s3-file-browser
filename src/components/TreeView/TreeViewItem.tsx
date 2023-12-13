@@ -1,22 +1,18 @@
-import { FC, useCallback, useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import cx from "clsx";
 import { range } from "lodash-es";
-
 import {
   useAppDispatch,
-  useAppSelector,
   useExpandedDirs,
   useLoadingDirs,
   useWorkingDir,
-} from "../store/hooks";
-import { actions } from "../store/actions";
-
-import { isDir, isRoot, parentDir, parentDirs } from "../utils/fs";
-import { Delimiter } from "../api/s3-client";
-import { useClickHandler } from "../hooks/use-click-handler";
-
-import { VscChevronRight, VscLoading, VscReply } from "react-icons/vsc";
-import "./TreeView.scss";
+} from "../../store/hooks";
+import { actions } from "../../store/actions";
+import { useClickHandler } from "../../hooks/use-click-handler";
+import { VscChevronRight, VscReply } from "react-icons/vsc";
+import { isRoot } from "../../utils/fs";
+import { Delimiter } from "../../api/s3-client";
+import { Loader } from "../Loader";
 
 const getDirInfo = (dir: string) => {
   if (isRoot(dir)) {
@@ -31,11 +27,11 @@ const getDirInfo = (dir: string) => {
   };
 };
 
-type DirItemProps = {
+type Props = {
   dir: string;
 };
 
-const TreeViewItem: FC<DirItemProps> = ({ dir }: DirItemProps) => {
+export const TreeViewItem = ({ dir }: Props) => {
   const dispatch = useAppDispatch();
 
   const expanded = useExpandedDirs();
@@ -69,8 +65,9 @@ const TreeViewItem: FC<DirItemProps> = ({ dir }: DirItemProps) => {
   return (
     <li onClick={clickHandler}>
       {range(level).map((i) => (
-        <span key={i} className="indent"></span>
+        <span key={i} className="indent" />
       ))}
+
       <div className={cx("item-content", isMarked && "marked")}>
         {isMarked ? (
           <VscReply className={cx("icon", "marked")} />
@@ -81,34 +78,7 @@ const TreeViewItem: FC<DirItemProps> = ({ dir }: DirItemProps) => {
         <span>{name}</span>
       </div>
 
-      {isLoading && <VscLoading className="loading" />}
+      {isLoading && <Loader />}
     </li>
-  );
-};
-
-export const TreeView = () => {
-  const files = useAppSelector((state) => state.files);
-  const expandedDirs = useExpandedDirs();
-  const workingDir = useWorkingDir();
-
-  const dirs = useMemo(
-    () =>
-      files.filter(
-        (file) =>
-          isDir(file) &&
-          (workingDir.includes(parentDir(file)) ||
-            parentDirs(file).every((parent) => expandedDirs.includes(parent)))
-      ),
-    [files, expandedDirs, workingDir]
-  );
-
-  return (
-    <div className="tree-view">
-      <ul>
-        {dirs.map((dir) => (
-          <TreeViewItem key={dir} dir={dir} />
-        ))}
-      </ul>
-    </div>
   );
 };
