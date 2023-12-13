@@ -1,34 +1,36 @@
-import { FC, useState } from "react";
+import { FC, useId, useState } from "react";
 
 import "./LoginForm.scss";
 import { Credentials } from "../api/context";
 
 type InputProps = {
   value: string;
-  placeholder: string;
+  label: string;
   onChange: (value: string) => void;
   required?: boolean;
 };
 
-const Input: FC<InputProps> = ({
-  value,
-  placeholder,
-  onChange,
-}) => (
-  <input
-    value={value}
-    placeholder={placeholder}
-    onChange={(e) => onChange(e.target.value)}
-    required
-  />
-);
+const FormInput: FC<InputProps> = ({ label, value, onChange }) => {
+  const id = useId();
+  return (
+    <>
+      <label htmlFor={id}>{label}</label>
+      <input
+        id={id}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        required
+      />
+    </>
+  );
+};
 
 type LoginFormProps = {
   onSubmit: (val: Credentials) => void;
 };
 
 export const LoginForm: FC<LoginFormProps> = ({ onSubmit }) => {
-  const [region, setRegion] = useState("");
+  const [region, setRegion] = useState("eu-west-1");
   const [accessKeyId, setAccessKeyId] = useState("");
   const [secretAccessKey, setSecretAccessKey] = useState("");
   const [bucket, setBucket] = useState("");
@@ -40,30 +42,20 @@ export const LoginForm: FC<LoginFormProps> = ({ onSubmit }) => {
 
   return (
     <form className="login-form" onSubmit={handleSubmit}>
-      <Input
-        placeholder="Region"
-        value={region}
-        onChange={setRegion}
-        required
-      />
-      <Input
-        placeholder="Access key ID"
+      <FormInput label="Region" value={region} onChange={setRegion} required />
+      <FormInput
+        label="Access key ID"
         value={accessKeyId}
         onChange={setAccessKeyId}
         required
       />
-      <Input
-        placeholder="Secret access key"
+      <FormInput
+        label="Secret access key"
         value={secretAccessKey}
         onChange={setSecretAccessKey}
         required
       />
-      <Input
-        placeholder="Bucket"
-        value={bucket}
-        onChange={setBucket}
-        required
-      />
+      <FormInput label="Bucket" value={bucket} onChange={setBucket} required />
       <button>Load Bucket</button>
     </form>
   );
