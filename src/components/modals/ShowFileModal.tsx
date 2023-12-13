@@ -42,7 +42,7 @@ export const ShowFileModal: FC<Props> = ({ isOpen, onClose, path }) => {
       <Modal.Content>
         <div className="path">{path}</div>
         {fileBody === null ? (
-          <Loader />
+          <Loader variant="large"/>
         ) : (
           <textarea className="body" readOnly>{fileBody}</textarea>
         )}
