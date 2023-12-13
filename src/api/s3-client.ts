@@ -15,8 +15,8 @@ const MaxKeys = 1000;
 const isDefined = <T>(x: T | undefined): x is T => x !== null;
 
 export class S3FileBrowserClient {
-  private apiClient: S3Client;
-  private bucket: string;
+  public readonly bucket: string;
+  private readonly apiClient: S3Client;
 
   constructor({ region, accessKeyId, secretAccessKey, bucket }: Credentials) {
     this.apiClient = new S3Client({

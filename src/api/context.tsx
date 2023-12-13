@@ -1,5 +1,4 @@
 import {
-  FC,
   PropsWithChildren,
   createContext,
   useCallback,
@@ -17,31 +16,26 @@ export type Credentials = {
   secretAccessKey: string;
 };
 
-export type ApiClientContextType = {
+export type ApiClientContext = {
   client: S3FileBrowserClient | null;
   initClient: (credentials: Credentials) => Promise<boolean>;
   clearClient: () => void;
 };
 
-const saveCredentials = (credentials: Credentials): void =>
-  setObject(CREDENTIALS_KEY, credentials);
-
-const loadCredentials = (): Credentials | null => getObject(CREDENTIALS_KEY);
-
+const saveCredentials = (cred: Credentials) => setObject(CREDENTIALS_KEY, cred);
+const loadCredentials = () => getObject<Credentials>(CREDENTIALS_KEY);
 const clearCredentials = (): void => clearObject(CREDENTIALS_KEY);
 
 const credentials = loadCredentials();
 const initialClient = credentials && new S3FileBrowserClient(credentials);
 
-export const ApiClientContext = createContext<ApiClientContextType>({
+export const ApiClientContext = createContext<ApiClientContext>({
   client: null,
   initClient: async () => false,
   clearClient: () => {},
 });
 
-export const ApiClientProvider: FC<PropsWithChildren> = ({
-  children,
-}) => {
+export const ApiClientProvider = ({ children }: PropsWithChildren) => {
   const [client, setClient] = useState(initialClient);
 
   const initClient = useCallback(

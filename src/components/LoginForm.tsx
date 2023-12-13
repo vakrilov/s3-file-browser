@@ -1,7 +1,7 @@
-import { FC, useId, useState } from "react";
+import { FC, FormEvent, useContext, useId, useState } from "react";
+import { ApiClientContext } from "../api/context";
 
 import "./LoginForm.scss";
-import { Credentials } from "../api/context";
 
 type InputProps = {
   value: string;
@@ -25,19 +25,27 @@ const FormInput: FC<InputProps> = ({ label, value, onChange }) => {
   );
 };
 
-type LoginFormProps = {
-  onSubmit: (val: Credentials) => void;
-};
+export const LoginForm = () => {
+  const { initClient } = useContext(ApiClientContext);
 
-export const LoginForm: FC<LoginFormProps> = ({ onSubmit }) => {
   const [region, setRegion] = useState("eu-west-1");
   const [accessKeyId, setAccessKeyId] = useState("");
   const [secretAccessKey, setSecretAccessKey] = useState("");
   const [bucket, setBucket] = useState("");
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
-    onSubmit({ bucket, region, accessKeyId, secretAccessKey });
+
+    const success = await initClient({
+      bucket,
+      region,
+      accessKeyId,
+      secretAccessKey,
+    });
+
+    if (!success) {
+      alert("Failed to connect");
+    }
   };
 
   return (

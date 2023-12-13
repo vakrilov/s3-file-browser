@@ -1,10 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App.tsx";
+import { App } from "./App.tsx";
 import { ApiClientProvider } from "./api/context.tsx";
 import { StoreProvider } from "./store/store.tsx";
 
-import 'normalize.css'
+import "normalize.css";
 import "./index.scss";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
