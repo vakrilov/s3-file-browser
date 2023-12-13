@@ -1,18 +1,14 @@
-import { useCallback, useMemo } from "react";
+import { memo, useCallback, useMemo } from "react";
 import cx from "clsx";
 import { range } from "lodash-es";
-import {
-  useAppDispatch,
-  useExpandedDirs,
-  useLoadingDirs,
-  useWorkingDir,
-} from "../../store/hooks";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { actions } from "../../store/actions";
 import { useClickHandler } from "../../hooks/use-click-handler";
 import { VscChevronRight, VscReply } from "react-icons/vsc";
 import { isRoot } from "../../utils/fs";
 import { Delimiter } from "../../api/s3-client";
 import { Loader } from "../Loader";
+import { RootState } from "../../store/store";
 
 const getDirInfo = (dir: string) => {
   if (isRoot(dir)) {
@@ -31,17 +27,23 @@ type Props = {
   dir: string;
 };
 
-export const TreeViewItem = ({ dir }: Props) => {
+const selectIsLoading = (state: RootState, dir: string) =>
+  state.loadingDirs.includes(dir);
+
+const selectIsExpanded = (state: RootState, dir: string) =>
+  state.expandedDirs.includes(dir);
+
+const selectIsMarked = (state: RootState, dir: string) =>
+  state.workingDir.includes(dir);
+
+export const TreeViewItem = memo(({ dir }: Props) => {
   const dispatch = useAppDispatch();
 
-  const expanded = useExpandedDirs();
-  const workingDir = useWorkingDir();
-  const loading = useLoadingDirs(); //TODO: how to prevent this form causing rerender?
-
   const { name, level } = useMemo(() => getDirInfo(dir), [dir]);
-  const isMarked = useMemo(() => workingDir.includes(dir), [dir, workingDir]);
-  const isExpanded = useMemo(() => expanded.includes(dir), [dir, expanded]);
-  const isLoading = useMemo(() => loading.includes(dir), [dir, loading]);
+
+  const isLoading = useAppSelector((state) => selectIsLoading(state, dir));
+  const isExpanded = useAppSelector((state) => selectIsExpanded(state, dir));
+  const isMarked = useAppSelector((state) => selectIsMarked(state, dir));
 
   const toggleExpand = useCallback(() => {
     if (isMarked) return;
@@ -81,4 +83,4 @@ export const TreeViewItem = ({ dir }: Props) => {
       {isLoading && <Loader />}
     </li>
   );
-};
+});
