@@ -1,5 +1,5 @@
 import { TreeView } from "./TreeView";
-import { WorkingDirectory } from "./WorkingDirectory";
+import { WorkingDirectory } from "./WorkingDirectory/WorkingDirectory";
 
 import "./FileBrowser.scss";
 

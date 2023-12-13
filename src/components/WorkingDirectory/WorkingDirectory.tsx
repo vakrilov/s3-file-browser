@@ -9,17 +9,17 @@ import {
   VscNewFolder,
 } from "react-icons/vsc";
 
-import { isDir, isRoot, parentDir } from "../utils/fs";
-import { actions, thunks } from "../store/actions";
+import { isDir, isRoot, parentDir } from "../../utils/fs";
+import { actions, thunks } from "../../store/actions";
 import {
   useAppDispatch,
   useWorkingDir,
   useWorkingDirFiles,
-} from "../store/hooks";
+} from "../../store/hooks";
 
 import "./WorkingDirectory.scss";
-import { ShowFileModal } from "./modals/ShowFileModal";
-import { CreateObjectModal } from "./modals/CreateObjectModal";
+import { ShowFileModal } from "../modals/ShowFileModal";
+import { CreateObjectModal } from "../modals/CreateObjectModal";
 
 type OpenedModal = null | "open-file" | "create-file" | "create-dir";
 
@@ -78,19 +78,29 @@ export const WorkingDirectory = () => {
     <div className="working-directory">
       <div className="commands">
         <button onClick={handleGoUp} disabled={isRoot(workingDir)}>
-          <VscReply className="icon up" /> Up
+          <VscReply className="icon up" />
+          <br />
+          Up
         </button>
         <button onClick={handleDeleteFile} disabled={!isFileSelected}>
-          <VscTrash className="icon" /> Delete
+          <VscTrash className="icon" />
+          <br />
+          Delete
         </button>
         <button onClick={handleOpenFile} disabled={!isFileSelected}>
-          <VscOutput className="icon" /> Open
+          <VscOutput className="icon" />
+          <br />
+          Open
         </button>
         <button onClick={handleCreateFile}>
-          <VscNewFile className="icon" /> New File
+          <VscNewFile className="icon" />
+          <br />
+          File
         </button>
         <button onClick={handleCreateDir}>
-          <VscNewFolder className="icon" /> New Dir
+          <VscNewFolder className="icon" />
+          <br />
+          Directory
         </button>
       </div>
 
