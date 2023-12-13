@@ -9,7 +9,7 @@ import {
   workingDirSlice,
 } from "./slices";
 
-const loadFolder = async (
+const loadDir = async (
   dir: string,
   dispatch: AppDispatch,
   client: S3FileBrowserClient
@@ -18,7 +18,7 @@ const loadFolder = async (
 
   dispatch(startLoading(dir));
   try {
-    const newFiles = await client.loadFolder(dir);
+    const newFiles = await client.loadDir(dir);
     dispatch(filesSlice.actions.addFiles(newFiles));
   } finally {
     dispatch(endLoading(dir));
@@ -37,7 +37,7 @@ export const createAutoLoadDirMiddleware =
       const dir = action.payload;
       const alreadyLoading = store.getState().loadingDirs.includes(dir);
       if (!alreadyLoading) {
-        loadFolder(dir, store.dispatch, client);
+        loadDir(dir, store.dispatch, client);
       } else {
         console.log("Already loading", dir);
       }

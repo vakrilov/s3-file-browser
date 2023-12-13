@@ -12,7 +12,7 @@ export const Delimiter = "/";
 export const EmptyDirFile = "__empty_dir__";
 const MaxKeys = 1000;
 
-const delay = () => new Promise((resolve) => setTimeout(resolve, 300));
+const isDefined = <T>(x: T | undefined): x is T => x !== null;
 
 export class S3FileBrowserClient {
   private apiClient: S3Client;
@@ -52,6 +52,24 @@ export class S3FileBrowserClient {
       })
     );
 
+  public readFile = async (path: string) => {
+    const response = await this.apiClient.send(
+      new GetObjectCommand({
+        Bucket: this.bucket,
+        Key: path,
+      })
+    );
+    return await response.Body?.transformToString();
+  };
+
+  public deleteFile = async (path: string) =>
+    await this.apiClient.send(
+      new DeleteObjectCommand({
+        Bucket: this.bucket,
+        Key: path,
+      })
+    );
+
   public createDir = async (path: string) =>
     await this.apiClient.send(
       new PutObjectCommand({
@@ -61,22 +79,7 @@ export class S3FileBrowserClient {
       })
     );
 
-  public readFile = async (path: string) => {
-    const response = await this.apiClient.send(
-      new GetObjectCommand({
-        Bucket: this.bucket,
-        Key: path,
-      })
-    );
-    const body = await response.Body?.transformToString();
-    return body;
-  };
-
-  public loadFolder = async (path: string) => {
-    console.log(`Loading folder: ~/${path}`);
-
-    await delay();
-
+  public loadDir = async (path: string) => {
     const response = await this.apiClient.send(
       new ListObjectsV2Command({
         Bucket: this.bucket,
@@ -85,22 +88,15 @@ export class S3FileBrowserClient {
       })
     );
 
-    const folders = [
-      ...(response.CommonPrefixes?.map((r) => r?.Prefix as string) || []),
-    ];
+    const dirs = (response.CommonPrefixes ?? [])
+      .map((common) => common.Prefix)
+      .filter(isDefined);
 
-    const files = [...(response.Contents?.map((r) => r?.Key as string) || [])];
+    const files = (response.Contents ?? [])
+      .map((contents) => contents.Key)
+      .filter(isDefined);
 
-    return [...folders, ...files];
-  };
-
-  public deleteFile = async (path: string) => {
-    await this.apiClient.send(
-      new DeleteObjectCommand({
-        Bucket: this.bucket,
-        Key: path,
-      })
-    );
+    return [...dirs, ...files];
   };
 
   public getAllFiles = async () => {
