@@ -1,5 +1,5 @@
 import {
-  FunctionComponent,
+  FC,
   PropsWithChildren,
   createContext,
   useCallback,
@@ -39,7 +39,7 @@ export const ApiClientContext = createContext<ApiClientContextType>({
   clearClient: () => {},
 });
 
-export const ApiClientProvider: FunctionComponent<PropsWithChildren> = ({
+export const ApiClientProvider: FC<PropsWithChildren> = ({
   children,
 }) => {
   const [client, setClient] = useState(initialClient);

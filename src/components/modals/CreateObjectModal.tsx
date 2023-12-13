@@ -1,4 +1,6 @@
-import { FunctionComponent, useCallback, useState } from "react";
+import { FC, useCallback, useEffect, useState } from "react";
+import cx from "clsx";
+
 import { Modal } from "./Modal";
 import { thunks } from "../../store/actions";
 import {
@@ -11,7 +13,7 @@ import { Delimiter } from "../../api/s3-client";
 
 import "./CreateObjectModal.scss";
 
-const regex = /^\w+$/;
+const regex = /^[\w-]+$/;
 const isValidName = (str: string) => regex.test(str);
 
 type Props = {
@@ -20,11 +22,7 @@ type Props = {
   onClose: () => void;
 };
 
-export const CreateObjectModal: FunctionComponent<Props> = ({
-  isOpen,
-  type,
-  onClose,
-}) => {
+export const CreateObjectModal: FC<Props> = ({ isOpen, type, onClose }) => {
   const dispatch = useAppDispatch();
   const workingDir = useWorkingDir();
   const files = useWorkingDirFiles();
@@ -37,48 +35,61 @@ export const CreateObjectModal: FunctionComponent<Props> = ({
   const alreadyExists =
     files.includes(name) || files.includes(`${name}${Delimiter}`);
 
+  let error = "";
+  if (alreadyExists) error = "File already exists";
+  if (name && !isValid) error = "Not a valid name";
+
   const canSubmit = isValid && !alreadyExists && !loading;
 
-  const handleCreate = useCallback(async () => {
-    if (!canSubmit) {
-      return;
-    }
-    setLoading(true);
-    if (type === "file") {
-      await dispatch(
-        thunks.createFile({
-          path: `${workingDir}${name}`,
-          body,
-        })
-      );
-    } else {
-      await dispatch(thunks.createDir(`${workingDir}${name}${Delimiter}`));
-    }
+  useEffect(() => {
+    setLoading(false);
     setName("");
     setBody("");
+  }, [isOpen]);
+
+  const handleCreate = useCallback(async () => {
+    if (!canSubmit) return;
+    const path = `${workingDir}${name}`;
+
+    setLoading(true);
+    if (type === "file") {
+      await dispatch(thunks.createFile({ path, body }));
+    } else {
+      await dispatch(thunks.createDir(`${path}${Delimiter}`));
+    }
     setLoading(false);
+
     onClose();
   }, [canSubmit, type, workingDir, name, body, onClose, dispatch]);
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
-      <div className="create-obj-modal">
-        Create new directory
-        <div>
+    <Modal isOpen={isOpen} onClose={onClose} className="create-obj-modal">
+      <Modal.Header>Create {type}</Modal.Header>
+      <Modal.Content>
+        <span className="label">Path</span>
+        <div className="path">
           {workingDir}
           <input value={name} onChange={(e) => setName(e.target.value)} />
           {type === "dir" && Delimiter}
         </div>
-        {loading && <Loader />}
-        {alreadyExists && <div>Already exists</div>}
-        {name && !isValid && <div>Not a valid name</div>}
+        <span className={cx("error", error && "visible")}>{error}</span>
         {type === "file" && (
-          <textarea value={body} onChange={(e) => setBody(e.target.value)} />
+          <>
+            <span className="label">Body</span>
+            <textarea value={body} onChange={(e) => setBody(e.target.value)} />
+          </>
         )}
-        <button onClick={handleCreate} disabled={!canSubmit}>
+      </Modal.Content>
+      <Modal.Footer>
+        <button
+          className="create-btn"
+          onClick={handleCreate}
+          disabled={!canSubmit}
+        >
           Create
+          {loading && <Loader />}
         </button>
-      </div>
+      </Modal.Footer>
     </Modal>
   );
 };

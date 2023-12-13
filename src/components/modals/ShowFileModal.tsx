@@ -1,8 +1,10 @@
-import { FunctionComponent, useCallback, useEffect, useState } from "react";
+import { FC, useCallback, useEffect, useState } from "react";
 import { Modal } from "./Modal";
 import { thunks } from "../../store/actions";
 import { useAppDispatch } from "../../store/hooks";
 import { Loader } from "../Loader";
+
+import "./ShowFileModal.scss";
 
 type Props = {
   isOpen: boolean;
@@ -20,11 +22,7 @@ const useReadFile = (path: string) => {
   }, [path, dispatch]);
 };
 
-export const ShowFileModal: FunctionComponent<Props> = ({
-  isOpen,
-  onClose,
-  path,
-}) => {
+export const ShowFileModal: FC<Props> = ({ isOpen, onClose, path }) => {
   const readFileAction = useReadFile(path);
   const [fileBody, setFileBody] = useState<string | null>(null);
 
@@ -39,9 +37,16 @@ export const ShowFileModal: FunctionComponent<Props> = ({
   }, [isOpen, readFileAction]);
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
-      <div>{path}</div>
-      <div>{fileBody === null ? <Loader /> : fileBody}</div>
+    <Modal isOpen={isOpen} onClose={onClose} className="show-file-modal">
+      <Modal.Header>Read File</Modal.Header>
+      <Modal.Content>
+        <div className="path">{path}</div>
+        {fileBody === null ? (
+          <Loader />
+        ) : (
+          <textarea className="body" readOnly>{fileBody}</textarea>
+        )}
+      </Modal.Content>
     </Modal>
   );
 };

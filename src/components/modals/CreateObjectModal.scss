@@ -1,4 +1,33 @@
 .create-obj-modal {
-  display: flex;
-  flex-direction: column;
+  min-width: 600px;
+
+  .path {
+    display: flex;
+    font-family: monospace;
+    text-align: start;
+
+    input{
+      flex-grow: 1;
+    }
+  }
+
+  .error {
+    color: rgb(188, 1, 1);
+    font-weight: bold;
+    opacity: 0;
+    text-align: start;
+    height: 1.5rem;
+    font-size: medium;
+    &.visible {
+      opacity: 1;
+    }
+  }
+
+  .label{
+    text-align: start;
+  }
+
+  .create-btn{
+    align-self: end;
+  }
 }

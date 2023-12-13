@@ -1,17 +1,32 @@
-import { useRef, useState, FunctionComponent, useEffect } from "react";
-import "./Modal.scss";
+import React, {
+  useRef,
+  useState,
+  FC,
+  useEffect,
+  PropsWithChildren,
+} from "react";
+import cx from "clsx";
 import { VscClose } from "react-icons/vsc";
+import "./Modal.scss";
 
 type ModalProps = {
   isOpen: boolean;
   onClose?: () => void;
   children: React.ReactNode;
+  className?: string;
 };
 
-export const Modal: FunctionComponent<ModalProps> = ({
+type ModalComponent = FC<ModalProps> & {
+  Header: FC<PropsWithChildren>;
+  Content: FC<PropsWithChildren>;
+  Footer: FC<PropsWithChildren>;
+};
+
+export const Modal: ModalComponent = ({
   isOpen,
   onClose,
   children,
+  className,
 }) => {
   const [isModalOpen, setModalOpen] = useState(isOpen);
   const modalRef = useRef<HTMLDialogElement | null>(null);
@@ -46,7 +61,11 @@ export const Modal: FunctionComponent<ModalProps> = ({
   }, [isModalOpen]);
 
   return (
-    <dialog ref={modalRef} onKeyDown={handleKeyDown} className="modal">
+    <dialog
+      ref={modalRef}
+      onKeyDown={handleKeyDown}
+      className={cx("modal", className)}
+    >
       <button className="close-btn" onClick={handleCloseModal}>
         <VscClose />
       </button>
@@ -54,3 +73,7 @@ export const Modal: FunctionComponent<ModalProps> = ({
     </dialog>
   );
 };
+
+Modal.Header = (props) => <h3 className="header" {...props} />;
+Modal.Content = (props) => <div className="content" {...props} />;
+Modal.Footer = (props) => <div className="footer" {...props} />;

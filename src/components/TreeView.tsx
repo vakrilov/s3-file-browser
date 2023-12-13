@@ -1,4 +1,4 @@
-import { FunctionComponent, useCallback, useMemo } from "react";
+import { FC, useCallback, useMemo } from "react";
 import cx from "clsx";
 import { range } from "lodash-es";
 
@@ -35,7 +35,7 @@ type DirItemProps = {
   dir: string;
 };
 
-const TreeViewItem: FunctionComponent<DirItemProps> = ({ dir }: DirItemProps) => {
+const TreeViewItem: FC<DirItemProps> = ({ dir }: DirItemProps) => {
   const dispatch = useAppDispatch();
 
   const expanded = useExpandedDirs();

@@ -1,0 +1,17 @@
+.show-file-modal {
+  min-height: 300px;
+
+  .path {
+    font-family: monospace;
+    font-weight: bold;
+    text-align: start;
+    margin-bottom: 0.5rem;
+  }
+
+  .body {
+    border: 1px solid #ccc;
+    font-family: monospace;
+    justify-self: stretch;
+    flex-grow: 1;
+  }
+}

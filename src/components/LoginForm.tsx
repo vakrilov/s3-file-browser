@@ -1,4 +1,4 @@
-import { FunctionComponent, useState } from "react";
+import { FC, useState } from "react";
 
 import "./LoginForm.scss";
 import { Credentials } from "../api/context";
@@ -10,7 +10,7 @@ type InputProps = {
   required?: boolean;
 };
 
-const Input: FunctionComponent<InputProps> = ({
+const Input: FC<InputProps> = ({
   value,
   placeholder,
   onChange,
@@ -27,7 +27,7 @@ type LoginFormProps = {
   onSubmit: (val: Credentials) => void;
 };
 
-export const LoginForm: FunctionComponent<LoginFormProps> = ({ onSubmit }) => {
+export const LoginForm: FC<LoginFormProps> = ({ onSubmit }) => {
   const [region, setRegion] = useState("");
   const [accessKeyId, setAccessKeyId] = useState("");
   const [secretAccessKey, setSecretAccessKey] = useState("");
