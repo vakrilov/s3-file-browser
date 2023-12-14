@@ -4,9 +4,9 @@ import {
   VscFolder,
   VscReply,
   VscTrash,
-  VscOutput,
   VscNewFile,
   VscNewFolder,
+  VscGoToFile,
 } from "react-icons/vsc";
 
 import { isDir, isRoot, parentDir } from "../../utils/fs";
@@ -79,28 +79,18 @@ export const WorkingDirectory = () => {
       <div className="commands">
         <button onClick={handleGoUp} disabled={isRoot(workingDir)}>
           <VscReply className="icon up" />
-          <br />
-          Up
         </button>
         <button onClick={handleDeleteFile} disabled={!isFileSelected}>
           <VscTrash className="icon" />
-          <br />
-          Delete
         </button>
         <button onClick={handleOpenFile} disabled={!isFileSelected}>
-          <VscOutput className="icon" />
-          <br />
-          Open
+          <VscGoToFile className="icon" />
         </button>
         <button onClick={handleCreateFile}>
           <VscNewFile className="icon" />
-          <br />
-          File
         </button>
         <button onClick={handleCreateDir}>
           <VscNewFolder className="icon" />
-          <br />
-          Directory
         </button>
       </div>
 
