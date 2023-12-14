@@ -3,7 +3,29 @@
   overflow-y: auto;
   display: grid;
   grid-template-columns: 2fr 3fr;
-  grid-template-areas: "left right";
+  grid-template-rows: auto 1fr;
+  grid-template-areas: "header header" "left right";
+
+  .header {
+    grid-area: header;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 1rem;
+    padding: 1rem;
+    border: 1px solid #d0d0d0;
+
+    h2 {
+      margin: 0;
+      font-weight: normal;
+    }
+
+    button {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+  }
 
   .left-panel,
   .right-panel {
