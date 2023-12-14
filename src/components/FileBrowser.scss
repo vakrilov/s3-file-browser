@@ -6,7 +6,7 @@
   grid-template-rows: auto 1fr;
   grid-template-areas: "header header" "left right";
 
-  .header {
+  >.header {
     grid-area: header;
     display: flex;
     justify-content: space-between;
@@ -30,7 +30,6 @@
   .left-panel,
   .right-panel {
     overflow-y: auto;
-    padding: 2rem;
     margin: 1rem;
     border: 1px solid #d0d0d0;
   }

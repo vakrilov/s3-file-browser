@@ -94,38 +94,40 @@ export const WorkingDirectory = () => {
         </button>
       </div>
 
-      <span className="current-dir">~/{workingDir}</span>
+      <div className="file-list">
+        <span className="current-dir">~/{workingDir}</span>
 
-      <ul>
-        {files.map((file, idx) => {
-          const isDir = file.endsWith("/");
-          const className = selectedIdx === idx ? "selected" : "";
-          if (isDir) {
-            return (
-              <li
-                className={className}
-                key={file}
-                onClick={() => handleClick(file)}
-              >
-                <VscFolder />
-                {file}
-              </li>
-            );
-          } else {
-            return (
-              <li
-                className={className}
-                key={file}
-                onClick={() => handleClick(file)}
-              >
-                <VscFile />
-                {file}
-              </li>
-            );
-          }
-        })}
-      </ul>
-
+        <ul>
+          {files.map((file, idx) => {
+            const isDir = file.endsWith("/");
+            const className = selectedIdx === idx ? "selected" : "";
+            if (isDir) {
+              return (
+                <li
+                  className={className}
+                  key={file}
+                  onClick={() => handleClick(file)}
+                >
+                  <VscFolder />
+                  {file}
+                </li>
+              );
+            } else {
+              return (
+                <li
+                  className={className}
+                  key={file}
+                  onClick={() => handleClick(file)}
+                >
+                  <VscFile />
+                  {file}
+                </li>
+              );
+            }
+          })}
+        </ul>
+      </div>
+      
       <ShowFileModal
         isOpen={openedModal === "open-file"}
         onClose={onCloseModal}

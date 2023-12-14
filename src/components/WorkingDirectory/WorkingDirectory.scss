@@ -3,44 +3,61 @@
   flex-direction: column;
   align-items: start;
   font-size: large;
+  scroll-padding-top: 4rem;
+  scroll-margin-top: 4rem;
+
+  --commands-height: 2.5rem;
 
   .commands {
+    position: sticky;
+    top: 0;
+    background-color: #303030;
+    align-self: stretch;
+
     display: flex;
     flex-direction: row;
     gap: 1rem;
-    margin-bottom: 1rem;
+    padding: 1rem;
     font-size: x-large;
+    border-bottom: 1px solid #d0d0d0;
 
     button {
       display: flex;
       align-items: center;
     }
-    
+
     .up {
       transform: scaleX(-1) rotate(90deg);
     }
   }
 
-  ul {
-    margin-left: 0.5rem;
-    font-family: monospace;
-    padding-inline: 0;
-    margin-block: 0;
-  }
+  .file-list {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    padding: 1rem;
 
-  li {
-    cursor: pointer;
-    list-style-type: none;
-    text-align: start;
-    margin: 0.25rem;
-  }
+    ul {
+      margin-left: 0.5rem;
+      font-family: monospace;
+      padding-inline: 0;
+      margin-block: 0;
+    }
 
-  .current-dir {
-    font-family: monospace;
-    font-weight: bold;
-  }
+    li {
+      cursor: pointer;
+      list-style-type: none;
+      text-align: start;
+      margin: 0.25rem;
+    }
 
-  .selected {
-    background-color: #5e5e5e;
+    .current-dir {
+      font-family: monospace;
+      font-weight: bold;
+    }
+
+    .selected {
+      background-color: #5e5e5e;
+    }
   }
 }
