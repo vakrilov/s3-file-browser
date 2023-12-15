@@ -1,8 +1,4 @@
-import {
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   VscReply,
   VscTrash,
@@ -26,7 +22,6 @@ import { WorkingDirectoryItem } from "./WorkingDirectoryItem";
 
 type OpenedModal = null | "open-file" | "create-file" | "create-dir";
 
-
 export const WorkingDirectory = () => {
   const workingDir = useWorkingDir();
   const files = useWorkingDirFiles();
@@ -38,7 +33,7 @@ export const WorkingDirectory = () => {
   const selectedFile = selectedIdx !== null ? files[selectedIdx] : null;
   const isFileSelected = selectedFile && !isDir(selectedFile);
 
-  const onCloseModal = useCallback(() => setOpenedModal(null), []);
+  const handleCloseModal = useCallback(() => setOpenedModal(null), []);
 
   const handleGoUp = useCallback(
     () => dispatch(actions.setWorkingDir(parentDir(workingDir))),
@@ -60,15 +55,9 @@ export const WorkingDirectory = () => {
     [selectedFile]
   );
 
-  const handleCreateFile = useCallback(() => setOpenedModal("create-file"), []);
-
-  const handleCreateDir = useCallback(() => setOpenedModal("create-dir"), []);
-
-  const handleClick = useCallback(
+  const handleItemClick = useCallback(
     (file: string) => {
-      if (selectedFile !== file) {
-        setSelectedIdx(files.indexOf(file));
-      } else if (selectedFile === file) {
+      if (selectedFile === file) {
         if (isDir(file)) {
           dispatch(actions.setWorkingDir(`${workingDir}${file}`));
         } else {
@@ -76,7 +65,7 @@ export const WorkingDirectory = () => {
         }
       }
     },
-    [files, selectedFile, workingDir, handleOpenFile, dispatch]
+    [selectedFile, workingDir, handleOpenFile, dispatch]
   );
 
   const handleFocus = useCallback(
@@ -98,10 +87,10 @@ export const WorkingDirectory = () => {
         <button onClick={handleOpenFile} disabled={!isFileSelected}>
           <VscGoToFile className="icon" />
         </button>
-        <button onClick={handleCreateFile}>
+        <button onClick={() => setOpenedModal("create-file")}>
           <VscNewFile className="icon" />
         </button>
-        <button onClick={handleCreateDir}>
+        <button onClick={() => setOpenedModal("create-dir")}>
           <VscNewFolder className="icon" />
         </button>
       </div>
@@ -115,7 +104,7 @@ export const WorkingDirectory = () => {
               key={file}
               file={file}
               selected={idx === selectedIdx}
-              onClick={handleClick}
+              onClick={handleItemClick}
               onFocus={handleFocus}
             />
           ))}
@@ -124,20 +113,20 @@ export const WorkingDirectory = () => {
 
       <ShowFileModal
         isOpen={openedModal === "open-file"}
-        onClose={onCloseModal}
+        onClose={handleCloseModal}
         path={`${workingDir}${selectedFile}`}
       />
 
       <CreateObjectModal
         isOpen={openedModal === "create-dir"}
         type="dir"
-        onClose={onCloseModal}
+        onClose={handleCloseModal}
       />
 
       <CreateObjectModal
         isOpen={openedModal === "create-file"}
         type="file"
-        onClose={onCloseModal}
+        onClose={handleCloseModal}
       />
     </div>
   );
