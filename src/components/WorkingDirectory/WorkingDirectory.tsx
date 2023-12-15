@@ -27,10 +27,12 @@ export const WorkingDirectory = () => {
   const files = useWorkingDirFiles();
   const dispatch = useAppDispatch();
 
-  const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
+  const [selectedFile, setSelectedFile] = useState<string | null>(null);
   const [openedModal, setOpenedModal] = useState<OpenedModal>(null);
 
-  const selectedFile = selectedIdx !== null ? files[selectedIdx] : null;
+  // Reset selection when working dir changes
+  useEffect(() => setSelectedFile(null), [workingDir]);
+
   const isFileSelected = selectedFile && !isDir(selectedFile);
 
   const handleCloseModal = useCallback(() => setOpenedModal(null), []);
@@ -39,17 +41,17 @@ export const WorkingDirectory = () => {
     () => dispatch(actions.setWorkingDir(parentDir(workingDir))),
     [workingDir, dispatch]
   );
-
+  
   const handleDeleteFile = useCallback(async () => {
     if (
       isFileSelected &&
       confirm(`Are you sure you want to delete ${selectedFile}?`)
     ) {
       await dispatch(thunks.deleteFile(`${workingDir}${selectedFile}`));
-      setSelectedIdx(null);
+      setSelectedFile(null);
     }
   }, [workingDir, isFileSelected, selectedFile, dispatch]);
-
+  
   const handleOpenFile = useCallback(
     () => selectedFile && setOpenedModal("open-file"),
     [selectedFile]
@@ -67,13 +69,6 @@ export const WorkingDirectory = () => {
     },
     [selectedFile, workingDir, handleOpenFile, dispatch]
   );
-
-  const handleFocus = useCallback(
-    (file: string) => setSelectedIdx(files.indexOf(file)),
-    [files]
-  );
-
-  useEffect(() => setSelectedIdx(null), [workingDir]);
 
   return (
     <div className="working-directory">
@@ -99,13 +94,13 @@ export const WorkingDirectory = () => {
         <span className="current-dir">~/{workingDir}</span>
 
         <ul>
-          {files.map((file, idx) => (
+          {files.map((file) => (
             <WorkingDirectoryItem
               key={file}
               file={file}
-              selected={idx === selectedIdx}
+              selected={file === selectedFile}
               onClick={handleItemClick}
-              onFocus={handleFocus}
+              onFocus={setSelectedFile}
             />
           ))}
         </ul>
