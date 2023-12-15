@@ -39,11 +39,16 @@ const reloadDir = async (
           }
         })
     );
+    const filesToAdd = newFiles.filter(
+      (file) => !nestedExistingFiles.includes(file)
+    );
 
     if (filesToRemove.length > 0) {
       dispatch(filesSlice.actions.removeFiles(filesToRemove));
     }
-    dispatch(filesSlice.actions.addFiles(newFiles));
+    if (filesToAdd.length > 0) {
+      dispatch(filesSlice.actions.addFiles(filesToAdd));
+    }
   } finally {
     dispatch(endLoading(dir));
   }
