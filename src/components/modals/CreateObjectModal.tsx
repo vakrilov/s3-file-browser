@@ -52,12 +52,15 @@ export const CreateObjectModal: FC<Props> = ({ isOpen, type, onClose }) => {
     const path = `${workingDir}${name}`;
 
     setLoading(true);
-    if (type === "file") {
-      await dispatch(thunks.createFile({ path, body }));
-    } else {
-      await dispatch(thunks.createDir(`${path}${Delimiter}`));
+    try {
+      if (type === "file") {
+        await dispatch(thunks.createFile({ path, body }));
+      } else {
+        await dispatch(thunks.createDir(`${path}${Delimiter}`));
+      }
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
 
     onClose();
   }, [canSubmit, type, workingDir, name, body, onClose, dispatch]);
