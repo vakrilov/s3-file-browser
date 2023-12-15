@@ -14,7 +14,6 @@ const createFile = createAsyncThunk(
     { dispatch, extra }
   ) => {
     const client = extra as S3FileBrowserClient;
-    console.log("createFile", path, body);
     await client.createFile(path, body);
     dispatch(filesSlice.actions.addFile(path));
   }

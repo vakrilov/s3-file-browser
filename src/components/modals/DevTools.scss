@@ -1,0 +1,18 @@
+.dev-tools-modal {
+  min-height: 300px;
+
+  .btn {
+    margin: 0.5rem;
+  }
+
+  .danger {
+    background-color: rgba(255, 0, 0, 0.335);
+    border-color: rgba(255, 0, 0, 0.52);;
+  }
+
+  .executing-loader {
+    align-self: center;
+    margin: 1rem;
+  }
+
+}

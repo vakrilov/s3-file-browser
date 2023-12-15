@@ -6,7 +6,7 @@
   grid-template-rows: auto 1fr;
   grid-template-areas: "header header" "left right";
 
-  >.header {
+  > .header {
     grid-area: header;
     display: flex;
     justify-content: space-between;
@@ -20,10 +20,15 @@
       font-weight: normal;
     }
 
-    button {
+    > .commands {
       display: flex;
-      gap: 0.5rem;
-      align-items: center;
+      gap: 1rem;
+
+      button {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+      }
     }
   }
 
