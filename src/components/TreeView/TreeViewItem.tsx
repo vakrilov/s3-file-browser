@@ -1,4 +1,4 @@
-import { RefObject, memo, useCallback, useMemo, useRef } from "react";
+import { memo, useCallback, useMemo, useRef } from "react";
 import cx from "clsx";
 import { range } from "lodash-es";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
@@ -9,6 +9,7 @@ import { isRoot } from "../../utils/fs";
 import { Delimiter } from "../../api/s3-client";
 import { Loader } from "../Loader";
 import { RootState } from "../../store/store";
+import { focusNextSibling, focusPreviousSibling } from "../../utils/focus";
 
 const getDirInfo = (dir: string) => {
   if (isRoot(dir)) {
@@ -35,16 +36,6 @@ const selectIsExpanded = (state: RootState, dir: string) =>
 
 const selectIsMarked = (state: RootState, dir: string) =>
   state.workingDir.includes(dir);
-
-const nextSibling = (ref: RefObject<HTMLElement> | null) => {
-  const next = ref?.current?.nextElementSibling;
-  return next instanceof HTMLElement ? next : null;
-};
-
-const previousSibling = (ref: RefObject<HTMLElement> | null) => {
-  const next = ref?.current?.previousElementSibling;
-  return next instanceof HTMLElement ? next : null;
-};
 
 export const TreeViewItem = memo(({ dir }: Props) => {
   const ref = useRef<HTMLLIElement>(null);
@@ -79,27 +70,20 @@ export const TreeViewItem = memo(({ dir }: Props) => {
     onDoubleClick: setWorkingDirCommand,
   });
 
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
-      switch (e.key) {
-        case "ArrowRight":
-          expandCommand();
-          break;
-        case "ArrowLeft":
-          collapseCommand();
-          break;
-        case "ArrowUp":
-          previousSibling(ref)?.focus();
-          break;
-        case "ArrowDown":
-          nextSibling(ref)?.focus();
-          break;
-        case "Enter":
-          setWorkingDirCommand();
-          break;
-      }
-    },
+  const keyHandlers = useMemo(
+    () => ({
+      ArrowRight: expandCommand,
+      ArrowLeft: collapseCommand,
+      ArrowUp: () => focusPreviousSibling(ref),
+      ArrowDown: () => focusNextSibling(ref),
+      Enter: setWorkingDirCommand,
+    } as { [key: string]: () => void }),
     [expandCommand, collapseCommand, setWorkingDirCommand]
+  );
+
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => keyHandlers[e.key]?.(),
+    [keyHandlers]
   );
 
   return (

@@ -1,7 +1,9 @@
-import { useCallback, useEffect, useState } from "react";
 import {
-  VscFile,
-  VscFolder,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
+import {
   VscReply,
   VscTrash,
   VscNewFile,
@@ -20,8 +22,10 @@ import {
 import "./WorkingDirectory.scss";
 import { ShowFileModal } from "../modals/ShowFileModal";
 import { CreateObjectModal } from "../modals/CreateObjectModal";
+import { WorkingDirectoryItem } from "./WorkingDirectoryItem";
 
 type OpenedModal = null | "open-file" | "create-file" | "create-dir";
+
 
 export const WorkingDirectory = () => {
   const workingDir = useWorkingDir();
@@ -42,11 +46,14 @@ export const WorkingDirectory = () => {
   );
 
   const handleDeleteFile = useCallback(async () => {
-    if (selectedFile) {
+    if (
+      isFileSelected &&
+      confirm(`Are you sure you want to delete ${selectedFile}?`)
+    ) {
       await dispatch(thunks.deleteFile(`${workingDir}${selectedFile}`));
       setSelectedIdx(null);
     }
-  }, [workingDir, selectedFile, dispatch]);
+  }, [workingDir, isFileSelected, selectedFile, dispatch]);
 
   const handleOpenFile = useCallback(
     () => selectedFile && setOpenedModal("open-file"),
@@ -70,6 +77,11 @@ export const WorkingDirectory = () => {
       }
     },
     [files, selectedFile, workingDir, handleOpenFile, dispatch]
+  );
+
+  const handleFocus = useCallback(
+    (file: string) => setSelectedIdx(files.indexOf(file)),
+    [files]
   );
 
   useEffect(() => setSelectedIdx(null), [workingDir]);
@@ -98,36 +110,18 @@ export const WorkingDirectory = () => {
         <span className="current-dir">~/{workingDir}</span>
 
         <ul>
-          {files.map((file, idx) => {
-            const isDir = file.endsWith("/");
-            const className = selectedIdx === idx ? "selected" : "";
-            if (isDir) {
-              return (
-                <li
-                  className={className}
-                  key={file}
-                  onClick={() => handleClick(file)}
-                >
-                  <VscFolder />
-                  {file}
-                </li>
-              );
-            } else {
-              return (
-                <li
-                  className={className}
-                  key={file}
-                  onClick={() => handleClick(file)}
-                >
-                  <VscFile />
-                  {file}
-                </li>
-              );
-            }
-          })}
+          {files.map((file, idx) => (
+            <WorkingDirectoryItem
+              key={file}
+              file={file}
+              selected={idx === selectedIdx}
+              onClick={handleClick}
+              onFocus={handleFocus}
+            />
+          ))}
         </ul>
       </div>
-      
+
       <ShowFileModal
         isOpen={openedModal === "open-file"}
         onClose={onCloseModal}
