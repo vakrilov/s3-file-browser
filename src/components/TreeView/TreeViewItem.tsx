@@ -1,15 +1,16 @@
 import { memo, useCallback, useMemo, useRef } from "react";
 import cx from "clsx";
 import { range } from "lodash-es";
+import { VscArrowRight, VscChevronRight } from "react-icons/vsc";
+
+import { Delimiter } from "../../api/s3-client";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { actions } from "../../store/actions";
-import { useClickHandler } from "../../hooks/use-click-handler";
-import { VscChevronRight, VscReply } from "react-icons/vsc";
-import { isRoot } from "../../utils/fs";
-import { Delimiter } from "../../api/s3-client";
-import { Loader } from "../Loader";
 import { RootState } from "../../store/store";
+import { isRoot } from "../../utils/fs";
 import { focusNextSibling, focusPreviousSibling } from "../../utils/focus";
+import { useClickHandler } from "../../hooks/use-click-handler";
+import { Loader } from "../Loader";
 
 const getDirInfo = (dir: string) => {
   if (isRoot(dir)) {
@@ -88,14 +89,20 @@ export const TreeViewItem = memo(({ dir }: Props) => {
   );
 
   return (
-    <li ref={ref} onClick={handleClick} tabIndex={0} onKeyDown={handleKeyDown}>
+    <li
+      ref={ref}
+      className={cx(isMarked && "marked")}
+      tabIndex={0}
+      onClick={handleClick}
+      onKeyDown={handleKeyDown}
+    >
       {range(level).map((i) => (
         <span key={i} className="indent" />
       ))}
 
-      <div className={cx("item-content", isMarked && "marked")}>
+      <div className="item-content">
         {isMarked ? (
-          <VscReply className={cx("icon", "marked")} />
+          <VscArrowRight className="icon" />
         ) : (
           <VscChevronRight className={cx("icon", isExpanded && "expanded")} />
         )}
