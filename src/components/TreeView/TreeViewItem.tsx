@@ -36,7 +36,7 @@ const selectIsExpanded = (state: RootState, dir: string) =>
   state.expandedDirs.includes(dir);
 
 const selectIsMarked = (state: RootState, dir: string) =>
-  state.workingDir.includes(dir);
+  state.workingDir.startsWith(dir);
 
 export const TreeViewItem = memo(({ dir }: Props) => {
   const ref = useRef<HTMLLIElement>(null);
