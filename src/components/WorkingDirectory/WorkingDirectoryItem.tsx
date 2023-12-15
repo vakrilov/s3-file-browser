@@ -6,44 +6,38 @@ import { isDir } from "../../utils/fs";
 import { focusNextSibling, focusPreviousSibling } from "../../utils/focus";
 
 import "./WorkingDirectory.scss";
+import { useClickHandler } from "../../hooks/use-click-handler";
 
 type Props = {
   file: string;
   selected: boolean;
-  onClick: (file: string) => void;
+  onActivate: (file: string) => void;
   onFocus: (file: string) => void;
 };
 export const WorkingDirectoryItem = ({
   file,
   selected,
-  onClick,
+  onActivate,
   onFocus,
 }: Props) => {
   const ref = useRef<HTMLLIElement>(null);
   const Icon = isDir(file) ? VscFolder : VscFile;
 
-  const handleClick = useCallback(() => {
-    console.log("click:", file, selected);
-    onClick(file);
-  }, [selected, file, onClick]);
-
-  const handleFocus = useCallback(
-    (e: unknown) => {
-      console.log("focus:", file);
-      console.log(e);
-      onFocus(file);
-    },
-    [file, onFocus]
+  const handleFocus = useCallback(() => onFocus(file), [file, onFocus]);
+  const handleActivate = useCallback(
+    () => onActivate(file),
+    [file, onActivate]
   );
+  const handleClick = useClickHandler({ onDoubleClick: handleActivate });
 
   const keyHandlers = useMemo(
     () =>
       ({
         ArrowUp: () => focusPreviousSibling(ref),
         ArrowDown: () => focusNextSibling(ref),
-        Enter: () => onClick(file),
+        Enter: () => onActivate(file),
       } as { [key: string]: () => void }),
-    [file, onClick]
+    [file, onActivate]
   );
 
   const handleKeyDown = useCallback(

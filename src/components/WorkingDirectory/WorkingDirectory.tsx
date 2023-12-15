@@ -23,17 +23,16 @@ import { WorkingDirectoryItem } from "./WorkingDirectoryItem";
 type OpenedModal = null | "open-file" | "create-file" | "create-dir";
 
 export const WorkingDirectory = () => {
+  const dispatch = useAppDispatch();
   const workingDir = useWorkingDir();
   const files = useWorkingDirFiles();
-  const dispatch = useAppDispatch();
 
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
   const [openedModal, setOpenedModal] = useState<OpenedModal>(null);
+  const isFileSelected = selectedFile && !isDir(selectedFile);
 
   // Reset selection when working dir changes
   useEffect(() => setSelectedFile(null), [workingDir]);
-
-  const isFileSelected = selectedFile && !isDir(selectedFile);
 
   const handleCloseModal = useCallback(() => setOpenedModal(null), []);
 
@@ -41,7 +40,7 @@ export const WorkingDirectory = () => {
     () => dispatch(actions.setWorkingDir(parentDir(workingDir))),
     [workingDir, dispatch]
   );
-  
+
   const handleDeleteFile = useCallback(async () => {
     if (
       isFileSelected &&
@@ -51,13 +50,13 @@ export const WorkingDirectory = () => {
       setSelectedFile(null);
     }
   }, [workingDir, isFileSelected, selectedFile, dispatch]);
-  
+
   const handleOpenFile = useCallback(
     () => selectedFile && setOpenedModal("open-file"),
     [selectedFile]
   );
 
-  const handleItemClick = useCallback(
+  const handleItemActivate = useCallback(
     (file: string) => {
       if (selectedFile === file) {
         if (isDir(file)) {
@@ -99,7 +98,7 @@ export const WorkingDirectory = () => {
               key={file}
               file={file}
               selected={file === selectedFile}
-              onClick={handleItemClick}
+              onActivate={handleItemActivate}
               onFocus={setSelectedFile}
             />
           ))}
