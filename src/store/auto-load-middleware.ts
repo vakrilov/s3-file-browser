@@ -8,10 +8,11 @@ import {
   loadingDirsSlice,
   workingDirSlice,
 } from "./slices";
+import { isDir } from "../utils/fs";
 
-const loadDir = async (
+const reloadDir = async (
   dir: string,
-  dispatch: AppDispatch,
+  { dispatch, getState }: MiddlewareAPI<AppDispatch, RootState>,
   client: S3FileBrowserClient
 ) => {
   const { startLoading, endLoading } = loadingDirsSlice.actions;
@@ -19,7 +20,29 @@ const loadDir = async (
   dispatch(startLoading(dir));
   try {
     const newFiles = await client.loadDir(dir);
-    // TODO: Check for files that are removed
+
+    // Get all files that are inside the directory
+    const nestedExistingFiles = getState().files.filter(
+      (path) => path.startsWith(dir) && path.length > dir.length
+    );
+
+    // Remove all files that are not:
+    // - in the new files list
+    // - inside a directory from the new files list
+    const filesToRemove = nestedExistingFiles.filter(
+      (existingFile) =>
+        !newFiles.some((newFile) => {
+          if (isDir(newFile)) {
+            return existingFile.startsWith(newFile);
+          } else {
+            return existingFile === newFile;
+          }
+        })
+    );
+
+    if (filesToRemove.length > 0) {
+      dispatch(filesSlice.actions.removeFiles(filesToRemove));
+    }
     dispatch(filesSlice.actions.addFiles(newFiles));
   } finally {
     dispatch(endLoading(dir));
@@ -38,7 +61,7 @@ export const createAutoLoadDirMiddleware =
       const dir = action.payload;
       const alreadyLoading = store.getState().loadingDirs.includes(dir);
       if (!alreadyLoading) {
-        loadDir(dir, store.dispatch, client);
+        reloadDir(dir, store, client);
       } else {
         console.log("Already loading", dir);
       }
