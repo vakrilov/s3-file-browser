@@ -1,31 +1,11 @@
-import { useMemo } from "react";
+import { useTreeViewDirs } from "../../store/hooks";
 
-import {
-  useAppSelector,
-  useExpandedDirs,
-  useWorkingDir,
-} from "../../store/hooks";
-
-import { isDir, parentDir, parentDirs } from "../../utils/fs";
 import { TreeViewItem } from "./TreeViewItem";
 
 import "./TreeView.scss";
 
 export const TreeView = () => {
-  const files = useAppSelector((state) => state.files);
-  const expandedDirs = useExpandedDirs();
-  const workingDir = useWorkingDir();
-
-  const dirs = useMemo(
-    () =>
-      files.filter(
-        (file) =>
-          isDir(file) &&
-          (workingDir.includes(parentDir(file)) ||
-            parentDirs(file).every((parent) => expandedDirs.includes(parent)))
-      ),
-    [files, expandedDirs, workingDir]
-  );
+  const dirs = useTreeViewDirs();
 
   return (
     <div className="tree-view">

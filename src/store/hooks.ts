@@ -5,6 +5,7 @@ import { uniq } from "lodash-es";
 
 import type { AppDispatch, RootState } from "./store";
 import { Delimiter, EmptyDirFile } from "../api/s3-client";
+import { isDir, isRoot, parentDir, parentDirs } from "../utils/fs";
 
 export const useAppDispatch: () => AppDispatch = useDispatch;
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
@@ -33,3 +34,23 @@ export const useWorkingDirFiles = () => useAppSelector(selectWorkingDirFiles);
 export const useExpandedDirs = () => useAppSelector(selectExpandedDirs);
 export const useLoadingDirs = () => useAppSelector(selectLoadingDirs);
 export const useWorkingDir = () => useAppSelector(selectWorkingDir);
+
+const selectTreeViewDirs = createSelector(
+  [selectFiles, selectExpandedDirs, selectWorkingDir],
+  (files, expandedDirs, workingDir) => {
+    // Working dir and all its parents are always expanded
+    const expanded = uniq([
+      workingDir,
+      ...parentDirs(workingDir),
+      ...expandedDirs,
+    ]);
+
+    // Dir is included if all of its parents are expanded
+    return files.filter(
+      (file) =>
+        isDir(file) &&
+        parentDirs(file).every((parent) => expanded.includes(parent))
+    );
+  }
+);
+export const useTreeViewDirs = () => useAppSelector(selectTreeViewDirs);
