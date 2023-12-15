@@ -14,8 +14,6 @@
   --selected-color: #5e5e5e;
 }
 
-
-
 body {
   margin: 0;
   display: flex;
@@ -56,6 +54,17 @@ input {
     border: 1px solid red;
   }
 }
+
+ul {
+  padding-inline: 0;
+  margin-block: 0;
+  li {
+    cursor: pointer;
+    list-style-type: none;
+    user-select: none;
+  }
+}
+
 
 @keyframes spin {
   from {

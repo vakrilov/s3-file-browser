@@ -71,13 +71,14 @@ export const TreeViewItem = memo(({ dir }: Props) => {
   });
 
   const keyHandlers = useMemo(
-    () => ({
-      ArrowRight: expandCommand,
-      ArrowLeft: collapseCommand,
-      ArrowUp: () => focusPreviousSibling(ref),
-      ArrowDown: () => focusNextSibling(ref),
-      Enter: setWorkingDirCommand,
-    } as { [key: string]: () => void }),
+    () =>
+      ({
+        ArrowRight: expandCommand,
+        ArrowLeft: collapseCommand,
+        ArrowUp: () => focusPreviousSibling(ref),
+        ArrowDown: () => focusNextSibling(ref),
+        Enter: setWorkingDirCommand,
+      } as { [key: string]: () => void }),
     [expandCommand, collapseCommand, setWorkingDirCommand]
   );
 
@@ -100,9 +101,9 @@ export const TreeViewItem = memo(({ dir }: Props) => {
         )}
 
         <span>{name}</span>
-      </div>
 
-      {isLoading && <Loader />}
+        {isLoading && <Loader />}
+      </div>
     </li>
   );
 });
