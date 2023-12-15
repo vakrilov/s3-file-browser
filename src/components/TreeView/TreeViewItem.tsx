@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo } from "react";
+import { RefObject, memo, useCallback, useMemo, useRef } from "react";
 import cx from "clsx";
 import { range } from "lodash-es";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
@@ -36,7 +36,18 @@ const selectIsExpanded = (state: RootState, dir: string) =>
 const selectIsMarked = (state: RootState, dir: string) =>
   state.workingDir.includes(dir);
 
+const nextSibling = (ref: RefObject<HTMLElement> | null) => {
+  const next = ref?.current?.nextElementSibling;
+  return next instanceof HTMLElement ? next : null;
+};
+
+const previousSibling = (ref: RefObject<HTMLElement> | null) => {
+  const next = ref?.current?.previousElementSibling;
+  return next instanceof HTMLElement ? next : null;
+};
+
 export const TreeViewItem = memo(({ dir }: Props) => {
+  const ref = useRef<HTMLLIElement>(null);
   const dispatch = useAppDispatch();
 
   const { name, level } = useMemo(() => getDirInfo(dir), [dir]);
@@ -45,27 +56,54 @@ export const TreeViewItem = memo(({ dir }: Props) => {
   const isExpanded = useAppSelector((state) => selectIsExpanded(state, dir));
   const isMarked = useAppSelector((state) => selectIsMarked(state, dir));
 
-  const toggleExpand = useCallback(() => {
-    if (isMarked) return;
+  // Don't expand/collapse marked items - they are always expanded
+  const collapseCommand = useCallback(
+    () => !isMarked && isExpanded && dispatch(actions.collapseDir(dir)),
+    [dir, isMarked, isExpanded, dispatch]
+  );
 
-    const action = isExpanded
-      ? actions.collapseDir(dir)
-      : actions.expandDir(dir);
-    dispatch(action);
-  }, [dir, isMarked, isExpanded, dispatch]);
+  const expandCommand = useCallback(
+    () => !isMarked && !isExpanded && dispatch(actions.expandDir(dir)),
+    [dir, isMarked, isExpanded, dispatch]
+  );
 
-  const setWorkingDir = useCallback(() => {
+  const setWorkingDirCommand = useCallback(() => {
     dispatch(actions.setWorkingDir(dir));
     dispatch(actions.expandDir(dir));
   }, [dir, dispatch]);
 
-  const clickHandler = useClickHandler({
-    onSingleClick: toggleExpand,
-    onDoubleClick: setWorkingDir,
+  const toggleCommand = isExpanded ? collapseCommand : expandCommand;
+
+  const handleClick = useClickHandler({
+    onSingleClick: toggleCommand,
+    onDoubleClick: setWorkingDirCommand,
   });
 
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      switch (e.key) {
+        case "ArrowRight":
+          expandCommand();
+          break;
+        case "ArrowLeft":
+          collapseCommand();
+          break;
+        case "ArrowUp":
+          previousSibling(ref)?.focus();
+          break;
+        case "ArrowDown":
+          nextSibling(ref)?.focus();
+          break;
+        case "Enter":
+          setWorkingDirCommand();
+          break;
+      }
+    },
+    [expandCommand, collapseCommand, setWorkingDirCommand]
+  );
+
   return (
-    <li onClick={clickHandler}>
+    <li ref={ref} onClick={handleClick} tabIndex={0} onKeyDown={handleKeyDown}>
       {range(level).map((i) => (
         <span key={i} className="indent" />
       ))}

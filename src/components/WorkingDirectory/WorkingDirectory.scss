@@ -57,7 +57,7 @@
     }
 
     .selected {
-      background-color: #5e5e5e;
+      background-color: var(--selected-color);
     }
   }
 }
