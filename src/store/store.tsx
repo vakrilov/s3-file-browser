@@ -47,6 +47,8 @@ export type AppDispatch = StoreType["dispatch"];
 
 export const StoreProvider = ({ children }: { children: React.ReactNode }) => {
   const { client } = useContext(ApiClientContext);
+  
+  // Store is re-created whenever client changes (new login)
   const store = useMemo(() => createAppStore(client), [client]);
   return <Provider store={store}>{children}</Provider>;
 };

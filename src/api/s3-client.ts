@@ -80,6 +80,7 @@ export class S3FileBrowserClient {
     );
 
   public loadDir = async (path: string) => {
+    // TODO: Will need to handle pagination for large directories
     const response = await this.apiClient.send(
       new ListObjectsV2Command({
         Bucket: this.bucket,
