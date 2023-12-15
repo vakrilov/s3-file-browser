@@ -19,6 +19,7 @@ const loadDir = async (
   dispatch(startLoading(dir));
   try {
     const newFiles = await client.loadDir(dir);
+    // TODO: Check for files that are removed
     dispatch(filesSlice.actions.addFiles(newFiles));
   } finally {
     dispatch(endLoading(dir));
