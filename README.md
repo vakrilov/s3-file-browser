@@ -23,4 +23,4 @@
     - Looking trough the [S3 Client API](https://github.com/aws/aws-sdk-js-v3/tree/main/clients/client-s3) I couldn't find a way to subscribe to changes in the bucket. I didn't want to do polling strategy and I decided that the auto-refresh of the `workingDir` and expandedDirs should be sufficient.
 - **Cutting corners:** Things I didn't do because of time constraints:
   - **Error handling:** I didn't have time to add proper error handling. I just added some basic error messages for the most common errors.
-  - **Tests:** I didn't have time to write proper tests. I would have liked to write some unit tests for the store and some integration tests for the UI.
+  - **Tests:** I didn't have time to write proper tests. I just added tests for the most important selectors, auto-load-middleware and some utils and hooks.
