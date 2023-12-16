@@ -1,6 +1,6 @@
 import { FC, useCallback, useContext, useState } from "react";
 import { Modal } from "./Modal";
-import { range } from "lodash-es";
+import { range } from "lodash";
 
 import "./DevTools.scss";
 import { ApiClientContext } from "../../api/context";

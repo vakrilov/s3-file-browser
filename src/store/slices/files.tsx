@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { uniq } from "lodash-es";
+import { uniq } from "lodash";
 import { fileCompare } from "../../utils/fs";
 
 export const filesSlice = createSlice({

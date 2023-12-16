@@ -1,6 +1,6 @@
 import { memo, useCallback, useMemo, useRef } from "react";
 import cx from "clsx";
-import { range } from "lodash-es";
+import { range } from "lodash";
 import { VscArrowRight, VscChevronRight } from "react-icons/vsc";
 
 import { Delimiter } from "../../api/s3-client";
