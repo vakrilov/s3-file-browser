@@ -4,7 +4,7 @@ import { range } from "lodash";
 import { VscArrowRight, VscChevronRight } from "react-icons/vsc";
 
 import { Delimiter } from "../../api/s3-client";
-import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { useAppDispatch, useAppSelector } from "../../store/selectors";
 import { actions } from "../../store/actions";
 import { RootState } from "../../store/store";
 import { isRoot } from "../../utils/fs";

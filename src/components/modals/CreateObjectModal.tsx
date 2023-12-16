@@ -7,7 +7,7 @@ import {
   useAppDispatch,
   useWorkingDir,
   useWorkingDirFiles,
-} from "../../store/hooks";
+} from "../../store/selectors";
 import { Loader } from "../Loader";
 import { Delimiter } from "../../api/s3-client";
 

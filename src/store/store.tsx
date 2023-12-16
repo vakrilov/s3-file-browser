@@ -13,7 +13,7 @@ import {
   workingDirSlice,
 } from "./slices";
 
-const createAppStore = (client: S3FileBrowserClient | null) => {
+export const createAppStore = (client: S3FileBrowserClient | null) => {
   const middlewares: Middleware[] = [];
   if (client) {
     middlewares.push(createAutoLoadDirMiddleware(client) as Middleware);
@@ -41,13 +41,13 @@ const createAppStore = (client: S3FileBrowserClient | null) => {
   return store;
 };
 
-type StoreType = ReturnType<typeof createAppStore>;
-export type RootState = ReturnType<StoreType["getState"]>;
-export type AppDispatch = StoreType["dispatch"];
+export type AppStore = ReturnType<typeof createAppStore>;
+export type RootState = ReturnType<AppStore["getState"]>;
+export type AppDispatch = AppStore["dispatch"];
 
 export const StoreProvider = ({ children }: { children: React.ReactNode }) => {
   const { client } = useContext(ApiClientContext);
-  
+
   // Store is re-created whenever client changes (new login)
   const store = useMemo(() => createAppStore(client), [client]);
   return <Provider store={store}>{children}</Provider>;

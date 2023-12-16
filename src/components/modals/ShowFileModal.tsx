@@ -1,7 +1,7 @@
 import { FC, useCallback, useEffect, useState } from "react";
 import { Modal } from "./Modal";
 import { thunks } from "../../store/actions";
-import { useAppDispatch } from "../../store/hooks";
+import { useAppDispatch } from "../../store/selectors";
 import { Loader } from "../Loader";
 
 import "./ShowFileModal.scss";

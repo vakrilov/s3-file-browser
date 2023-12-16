@@ -13,7 +13,7 @@ import {
   useAppDispatch,
   useWorkingDir,
   useWorkingDirFiles,
-} from "../../store/hooks";
+} from "../../store/selectors";
 
 import "./WorkingDirectory.scss";
 import { ShowFileModal } from "../modals/ShowFileModal";

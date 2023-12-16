@@ -15,7 +15,7 @@ const selectWorkingDir = (state: RootState) => state.workingDir;
 const selectExpandedDirs = (state: RootState) => state.expandedDirs;
 const selectLoadingDirs = (state: RootState) => state.loadingDirs;
 
-const selectWorkingDirFiles = createSelector(
+export const selectWorkingDirFiles = createSelector(
   [selectFiles, selectWorkingDir],
   (files, wd) => {
     const nested = files
@@ -35,7 +35,7 @@ export const useExpandedDirs = () => useAppSelector(selectExpandedDirs);
 export const useLoadingDirs = () => useAppSelector(selectLoadingDirs);
 export const useWorkingDir = () => useAppSelector(selectWorkingDir);
 
-const selectTreeViewDirs = createSelector(
+export const selectTreeViewDirs = createSelector(
   [selectFiles, selectExpandedDirs, selectWorkingDir],
   (files, expandedDirs, workingDir) => {
     // Working dir and all its parents are always expanded

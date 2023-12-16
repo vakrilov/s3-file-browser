@@ -6,7 +6,7 @@ import "./DevTools.scss";
 import { ApiClientContext } from "../../api/context";
 import { Loader } from "../Loader";
 import { actions, thunks } from "../../store/actions";
-import { useAppDispatch } from "../../store/hooks";
+import { useAppDispatch } from "../../store/selectors";
 
 const randNum = () => Math.floor(Math.random() * 1000);
 
