@@ -1,5 +1,5 @@
 import { FC, FormEvent, useContext, useId, useState } from "react";
-import { ApiClientContext } from "../api/context";
+import { ApiClientContext } from "@/api/context";
 
 import "./LoginForm.scss";
 

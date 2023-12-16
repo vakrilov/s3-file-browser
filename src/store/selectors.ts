@@ -4,8 +4,8 @@ import { createSelector } from "@reduxjs/toolkit";
 import { uniq } from "lodash";
 
 import type { AppDispatch, RootState } from "./store";
-import { Delimiter, EmptyDirFile } from "../api/s3-client";
-import { isDir, parentDirs } from "../utils/fs";
+import { isDir, parentDirs } from "@/utils/fs";
+import { Delimiter, EmptyDirFile } from "@/api/s3-client";
 
 export const useAppDispatch: () => AppDispatch = useDispatch;
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;

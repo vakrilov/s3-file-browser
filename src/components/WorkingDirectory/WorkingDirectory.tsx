@@ -7,13 +7,13 @@ import {
   VscGoToFile,
 } from "react-icons/vsc";
 
-import { isDir, isRoot, parentDir } from "../../utils/fs";
-import { actions, thunks } from "../../store/actions";
+import { isDir, isRoot, parentDir } from "@/utils/fs";
+import { actions, thunks } from "@/store/actions";
 import {
   useAppDispatch,
   useWorkingDir,
   useWorkingDirFiles,
-} from "../../store/selectors";
+} from "@/store/selectors";
 
 import "./WorkingDirectory.scss";
 import { ShowFileModal } from "../modals/ShowFileModal";

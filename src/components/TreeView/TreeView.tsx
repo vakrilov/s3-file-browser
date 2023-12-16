@@ -1,4 +1,4 @@
-import { useTreeViewDirs } from "../../store/selectors";
+import { useTreeViewDirs } from "@/store/selectors";
 
 import { TreeViewItem } from "./TreeViewItem";
 

@@ -4,7 +4,7 @@ import { TreeView } from "./TreeView/TreeView";
 import { WorkingDirectory } from "./WorkingDirectory/WorkingDirectory";
 
 import "./FileBrowser.scss";
-import { ApiClientContext } from "../api/context";
+import { ApiClientContext } from "@/api/context";
 import { DevToolsModal } from "./modals/DevTools";
 
 export const FileBrowser = () => {

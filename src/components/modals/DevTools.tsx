@@ -3,10 +3,10 @@ import { Modal } from "./Modal";
 import { range } from "lodash";
 
 import "./DevTools.scss";
-import { ApiClientContext } from "../../api/context";
+import { ApiClientContext } from "@/api/context";
 import { Loader } from "../Loader";
-import { actions, thunks } from "../../store/actions";
-import { useAppDispatch } from "../../store/selectors";
+import { actions, thunks } from "@/store/actions";
+import { useAppDispatch } from "@/store/selectors";
 
 const randNum = () => Math.floor(Math.random() * 1000);
 

@@ -2,14 +2,14 @@ import { FC, useCallback, useEffect, useState } from "react";
 import cx from "clsx";
 
 import { Modal } from "./Modal";
-import { thunks } from "../../store/actions";
+import { thunks } from "@/store/actions";
 import {
   useAppDispatch,
   useWorkingDir,
   useWorkingDirFiles,
-} from "../../store/selectors";
+} from "@/store/selectors";
 import { Loader } from "../Loader";
-import { Delimiter } from "../../api/s3-client";
+import { Delimiter } from "@/api/s3-client";
 
 import "./CreateObjectModal.scss";
 

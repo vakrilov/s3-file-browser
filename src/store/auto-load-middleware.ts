@@ -1,6 +1,6 @@
 import { Action, MiddlewareAPI } from "@reduxjs/toolkit";
 import { Dispatch } from "react";
-import { S3FileBrowserClient } from "../api/s3-client";
+import { S3FileBrowserClient } from "@/api/s3-client";
 import { AppDispatch, RootState } from "./store";
 import {
   expandedDirsSlice,
@@ -8,7 +8,7 @@ import {
   loadingDirsSlice,
   workingDirSlice,
 } from "./slices";
-import { isDir } from "../utils/fs";
+import { isDir } from "@/utils/fs";
 
 const reloadDir = async (
   dir: string,

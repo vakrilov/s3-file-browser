@@ -1,4 +1,4 @@
-import { Delimiter } from "../api/s3-client";
+import { Delimiter } from "@/api/s3-client";
 
 export const isRoot = (path: string) => path === "";
 

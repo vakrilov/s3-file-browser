@@ -3,9 +3,9 @@ import { Middleware, configureStore } from "@reduxjs/toolkit";
 
 import { createAutoLoadDirMiddleware } from "./auto-load-middleware";
 
-import { S3FileBrowserClient } from "../api/s3-client";
+import { S3FileBrowserClient } from "@/api/s3-client";
 import { useContext, useMemo } from "react";
-import { ApiClientContext } from "../api/context";
+import { ApiClientContext } from "@/api/context";
 import {
   expandedDirsSlice,
   filesSlice,

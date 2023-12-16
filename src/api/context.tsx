@@ -4,7 +4,7 @@ import {
   useCallback,
   useState,
 } from "react";
-import { clearObject, getObject, setObject } from "../utils/local-storage";
+import { clearObject, getObject, setObject } from "@/utils/local-storage";
 import { S3FileBrowserClient } from "./s3-client";
 
 const CREDENTIALS_KEY = "s3-browser-credentials";

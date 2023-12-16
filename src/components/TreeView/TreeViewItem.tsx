@@ -3,13 +3,14 @@ import cx from "clsx";
 import { range } from "lodash";
 import { VscArrowRight, VscChevronRight } from "react-icons/vsc";
 
-import { Delimiter } from "../../api/s3-client";
-import { useAppDispatch, useAppSelector } from "../../store/selectors";
-import { actions } from "../../store/actions";
-import { RootState } from "../../store/store";
-import { isRoot } from "../../utils/fs";
-import { focusNextSibling, focusPreviousSibling } from "../../utils/focus";
-import { useClickHandler } from "../../hooks/use-click-handler";
+import { Delimiter } from "@/api/s3-client";
+import { useAppDispatch, useAppSelector } from "@/store/selectors";
+import { actions } from "@/store/actions";
+import { RootState } from "@/store/store";
+import { isRoot } from "@/utils/fs";
+import { focusNextSibling, focusPreviousSibling } from "@/utils/focus";
+import { useClickHandler } from "@/hooks/use-click-handler";
+
 import { Loader } from "../Loader";
 
 const getDirInfo = (dir: string) => {

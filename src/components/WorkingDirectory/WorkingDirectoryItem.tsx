@@ -2,11 +2,11 @@ import { useCallback, useMemo, useRef } from "react";
 import cx from "clsx";
 import { VscFile, VscFolder } from "react-icons/vsc";
 
-import { isDir } from "../../utils/fs";
-import { focusNextSibling, focusPreviousSibling } from "../../utils/focus";
+import { isDir } from "@/utils/fs";
+import { focusNextSibling, focusPreviousSibling } from "@/utils/focus";
 
 import "./WorkingDirectory.scss";
-import { useClickHandler } from "../../hooks/use-click-handler";
+import { useClickHandler } from "@/hooks/use-click-handler";
 
 type Props = {
   file: string;

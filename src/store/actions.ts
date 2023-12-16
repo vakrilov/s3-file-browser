@@ -5,7 +5,7 @@ import {
   expandedDirsSlice,
   loadingDirsSlice,
 } from "./slices";
-import { S3FileBrowserClient } from "../api/s3-client";
+import { S3FileBrowserClient } from "@/api/s3-client";
 
 const createFile = createAsyncThunk(
   "files/createFile",
